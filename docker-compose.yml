@@ -1,0 +1,128 @@
+version: "3.9"
+
+services:
+  # =====================
+  # PostgreSQL for Auth + Student
+  # =====================
+  postgres-auth-student:
+    image: postgres:15
+    container_name: postgres-auth-student
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: auth_student
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_auth_student_data:/var/lib/postgresql/data
+
+  # =====================
+  # PostgreSQL for Payment
+  # =====================
+  postgres-payment:
+    image: postgres:15
+    container_name: postgres-payment
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: payment
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_payment_data:/var/lib/postgresql/data
+
+  # =====================
+  # MongoDB for Notification
+  # =====================
+  mongo-notification:
+    image: mongo:6
+    container_name: mongo-notification
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_notification_data:/data/db
+
+  # =====================
+  # Auth Service
+  # =====================
+  auth:
+    build: ./auth
+    container_name: auth-service
+    restart: always
+    depends_on:
+      - postgres-auth-student
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@postgres-auth-student:5432/auth_student"
+      PORT: 3001
+    ports:
+      - "3001:3001"
+
+  # =====================
+  # Student Service
+  # =====================
+  student:
+    build: ./student
+    container_name: student-service
+    restart: always
+    depends_on:
+      - postgres-auth-student
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@postgres-auth-student:5432/auth_student"
+      PORT: 3004
+    ports:
+      - "3004:3004"
+
+  # =====================
+  # Payment Service
+  # =====================
+  payment:
+    build: ./payment
+    container_name: payment-service
+    restart: always
+    depends_on:
+      - postgres-payment
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@postgres-payment:5432/payment"
+      PORT: 3003
+    ports:
+      - "3003:3003"
+
+  # =====================
+  # Notification Service
+  # =====================
+  notification:
+    build: ./notification
+    container_name: notification-service
+    restart: always
+    depends_on:
+      - mongo-notification
+    environment:
+      DATABASE_URL: "mongodb://mongo-notification:27017/notifications"
+      PORT: 3002
+    ports:
+      - "3002:3002"
+
+  # =====================
+  # Frontend (Next.js)
+  # =====================
+  frontend:
+    build: ./frontend
+    container_name: frontend-app
+    restart: always
+    depends_on:
+      - auth
+      - notification
+      - payment
+      - student
+    environment:
+      NEXT_PUBLIC_API_AUTH: "http://localhost:3001"
+      NEXT_PUBLIC_API_NOTIFICATION: "http://localhost:3002"
+      NEXT_PUBLIC_API_PAYMENT: "http://localhost:3003"
+      NEXT_PUBLIC_API_STUDENT: "http://localhost:3004"
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_auth_student_data:
+  postgres_payment_data:
+  mongo_notification_data:

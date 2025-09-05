@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  # =====================
+  # PostgreSQL for Auth + Student
+  # =====================
+  postgres-auth-student:
+    image: postgres:15
+    container_name: postgres-auth-student
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: auth_student
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_auth_student_data:/var/lib/postgresql/data
+
+  # =====================
+  # PostgreSQL for Payment
+  # =====================
+  postgres-payment:
+    image: postgres:15
+    container_name: postgres-payment
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: payment
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_payment_data:/var/lib/postgresql/data
+
+  # =====================
+  # MongoDB for Notification
+  # =====================
+  mongo-notification:
+    image: mongo:6
+    container_name: mongo-notification
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_notification_data:/data/db
+
+volumes:
+  postgres_auth_student_data:
+  postgres_payment_data:
+  mongo_notification_data:
