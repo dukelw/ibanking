@@ -10,6 +10,8 @@ async function bootstrap() {
   const port = process.env.PORT ?? 4002;
   await app.listen(port);
 
-  console.log(`🚀 Auth service is running on: http://localhost:${port}`);
+  console.log(
+    `🚀 Notification service is running on: http://localhost:${port}`,
+  );
 }
 bootstrap();

@@ -36,12 +36,12 @@ npm install
 Then run all microservices + frontend + DB with a single command:
 
 ```bash
-npm run dev
+npm run start
 ```
 
 ### Explanation
 
-- The `npm run dev` script will:
+- The `npm run start` script will:
 
   1. Start the Docker database (`docker-compose.db.yml`)
   2. Start `auth-service`, `notification-service`, `payment-service`
@@ -59,7 +59,7 @@ Open Prisma Studio:
 
 ```bash
 # auth-service (port 5556)
-npx prisma studio -- --port 5556
+npx prisma studio --port 5556
 
 # payment-service (port 5558)
 npx prisma studio --port 5558
