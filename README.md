@@ -5,7 +5,6 @@
 - Node.js >= 18
 - npm >= 9
 - Docker & Docker Compose
-- MongoDB Compass (if you want to manage MongoDB)
 - PostgreSQL (or corresponding DB for Prisma)
 
 ---
@@ -15,11 +14,11 @@
 ```
 ibanking/
 ├─ docker-compose.db.yml       # Docker DB for the project
-├─ auth-service/
-├─ notification-service/
-├─ payment-service/
-├─ frontend/
-├─ package.json               # Run dev scripts
+├─ auth-service/               # Auth + Student service (Prisma + Postgres)
+├─ notification-service/       # Notification service (Prisma + Postgres)
+├─ payment-service/            # Payment service (Prisma + Postgres)
+├─ frontend/                   # Frontend (Next.js)
+├─ package.json                # Run dev scripts
 └─ README.md
 ```
 
@@ -61,6 +60,9 @@ Open Prisma Studio:
 # auth-service (port 5556)
 npx prisma studio --port 5556
 
+# notification-service (port 5557)
+npx prisma studio --port 5557
+
 # payment-service (port 5558)
 npx prisma studio --port 5558
 ```
@@ -70,20 +72,7 @@ npx prisma studio --port 5558
 
 ---
 
-## 5. Manage MongoDB Database
-
-Some services use MongoDB, e.g., `notification-service`. Use **MongoDB Compass** to connect:
-
-```
-mongodb://localhost:27018/notification
-```
-
-- Adjust the port/DB name according to the service.
-- Compass helps you view collections, documents, queries, indexes, etc.
-
----
-
-## 6. Notes
+## 5. Notes
 
 - If the database is not ready, services may fail to connect.
 - You can use tools like `wait-for-it` or `dockerize` to delay services until the DB is ready.
@@ -98,7 +87,7 @@ and use Ctrl+C for services if running separately.
 
 ---
 
-## 7. Troubleshooting
+## 6. Troubleshooting
 
 - If Prisma Studio doesn't start: check the `DATABASE_URL` in the `.env` of the corresponding service.
 - If MongoDB Compass cannot connect: make sure MongoDB is running and the port is correct.

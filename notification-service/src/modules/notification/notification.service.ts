@@ -1,33 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import {
-  Notification,
-  NotificationDocument,
-} from 'src/schemas/notification.schema';
+import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
 export class NotificationService {
-  constructor(
-    @InjectModel(Notification.name)
-    private notificationModel: Model<NotificationDocument>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
-  async create(title: string, message: string, userId?: string) {
-    const notif = new this.notificationModel({ title, message, userId });
-    return notif.save();
+  async create(title: string, message?: string, userId?: string) {
+    return this.prisma.notification.create({
+      data: { title, message, userId },
+    });
   }
 
   async findAll(userId?: string) {
-    if (userId) return this.notificationModel.find({ userId }).exec();
-    return this.notificationModel.find().exec();
+    if (userId) {
+      return this.prisma.notification.findMany({ where: { userId } });
+    }
+    return this.prisma.notification.findMany();
   }
 
   async markAsRead(id: string) {
-    return this.notificationModel.findByIdAndUpdate(
-      id,
-      { read: true },
-      { new: true },
-    );
+    return this.prisma.notification.update({
+      where: { id },
+      data: { read: true },
+    });
+  }
+
+  async update(
+    id: string,
+    data: { title?: string; message?: string; read?: boolean },
+  ) {
+    return this.prisma.notification.update({
+      where: { id },
+      data,
+    });
   }
 }
