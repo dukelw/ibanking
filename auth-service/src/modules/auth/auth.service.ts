@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'prisma/prisma.service';
 
@@ -19,5 +19,30 @@ export class AuthService {
 
   async getUsers() {
     return this.prisma.user.findMany();
+  }
+
+  async login(email: string, password: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    }); 
+
+    if (!user) {
+      throw new UnauthorizedException('Email or password is incorrect');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Email or password is incorrect');
+    }
+
+    return {
+      message: 'Login successful',
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
+    };
   }
 }
