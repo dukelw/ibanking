@@ -32,17 +32,21 @@ services:
       - postgres_payment_data:/var/lib/postgresql/data
 
   # =====================
-  # MongoDB for Notification
+  # PostgreSQL for Notification
   # =====================
-  mongo-notification:
-    image: mongo:6
-    container_name: mongo-notification
+  postgres-notification:
+    image: postgres:15
+    container_name: postgres-notification
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: notification
     ports:
-      - "27018:27017"
+      - "5436:5432"
     volumes:
-      - mongo_notification_data:/data/db
+      - postgres_notification_data:/var/lib/postgresql/data
 
 volumes:
   postgres_auth_student_data:
   postgres_payment_data:
-  mongo_notification_data:
+  postgres_notification_data:
