@@ -18,5 +18,12 @@ model User {
   email     String   @unique
   name      String?
   password  String
+  phone     String @default("")
+  balance   Float @default(0.00)
   createdAt DateTime @default(now())
+}
+
+model Student {
+  id        Int      @id
+  name      String?
 }
