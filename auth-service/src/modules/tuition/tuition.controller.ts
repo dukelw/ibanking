@@ -7,10 +7,11 @@ export class TuitionController {
 
   @Post('create')
   async createTuition(
+    @Body('sID') sID: string,
     @Body('status') status: string,
     @Body('fee') fee: number,
   ) {
-    return this.tuitionService.createTuition(status, fee);
+    return this.tuitionService.createTuition(sID, status, fee);
   }
   @Get()
   async findAll() {

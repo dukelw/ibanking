@@ -6,6 +6,8 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/prisma"
+
 }
 
 datasource db {
@@ -24,12 +26,15 @@ model User {
 }
 model Student {
   id        Int      @id @default(autoincrement())
-  sID       String?  @unique
+  sID       String  @unique
   name      String?
   password  String  
+  tuitions Tuition[]
 }
 model Tuition {
   id        Int      @id @default(autoincrement())
-  status     String   
+  sID      String
+  status     String   @default("PENDING")
   fee      Int
+  student Student @relation(fields: [sID], references: [sID]) 
 }

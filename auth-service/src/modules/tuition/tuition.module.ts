@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { PrismaService } from 'prisma/prisma.service';
 import { TuitionService } from './tuition.service';
 import { TuitionController } from './tuition.controller';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
   providers: [TuitionService, PrismaService],

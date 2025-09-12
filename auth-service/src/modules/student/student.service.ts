@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class StudentService {
@@ -24,7 +24,7 @@ export class StudentService {
   async login(sID: string, password: string) {
     const student = await this.prisma.student.findUnique({
       where: { sID },
-    }); 
+    });
 
     console.log(student);
 
