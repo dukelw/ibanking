@@ -58,13 +58,13 @@ Open Prisma Studio:z
 
 ```bash
 # auth-service (port 5556)
-npm run prisma studio --prefix auth-service -- --port 5556
+npm run prisma studio auth-service -- --port 5556
 
 # notification-service (port 5557)
 npx prisma studio --port 5557
 
 # payment-service (port 5558)
-npm run prisma studio --prefix payment-service -- --port 5558
+npm run prisma studio payment-service -- --port 5558
 ```
 
 - Ports from **5556 to 5560** can be used for different services.
