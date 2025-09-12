@@ -54,17 +54,17 @@ npm run start
 
 Each service using Prisma has its own `schema.prisma`, e.g., `auth-service/prisma/schema.prisma`, `payment-service/prisma/schema.prisma`.
 
-Open Prisma Studio:
+Open Prisma Studio:z
 
 ```bash
 # auth-service (port 5556)
-npx prisma studio --port 5556
+npm run prisma studio --prefix auth-service -- --port 5556
 
 # notification-service (port 5557)
 npx prisma studio --port 5557
 
 # payment-service (port 5558)
-npx prisma studio --port 5558
+npm run prisma studio --prefix payment-service -- --port 5558
 ```
 
 - Ports from **5556 to 5560** can be used for different services.
