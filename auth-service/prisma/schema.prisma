@@ -24,17 +24,3 @@ model User {
   balance   Float @default(0.00)
   createdAt DateTime @default(now())
 }
-model Student {
-  id        Int      @id @default(autoincrement())
-  sID       String  @unique
-  name      String?
-  password  String  
-  tuitions Tuition[]
-}
-model Tuition {
-  id        Int      @id @default(autoincrement())
-  sID      String
-  status     String   @default("PENDING")
-  fee      Int
-  student Student @relation(fields: [sID], references: [sID]) 
-}
