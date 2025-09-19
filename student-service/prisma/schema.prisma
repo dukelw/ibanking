@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id           Int           @id @default(autoincrement())
+  sID          String        @unique
+  name         String?
+  password     String
+  tuitions     Tuition[]
+  // Quan hệ: một student có thể nhận nhiều transaction
+  transactions Transaction[]
+}
+
+model Tuition {
+  id      Int     @id @default(autoincrement())
+  sID     String
+  status  String  @default("PENDING")
+  fee     Int
+  student Student @relation(fields: [sID], references: [sID])
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  amount    Float
+  createdAt DateTime @default(now())
+
+  // Liên kết đến User (người nộp tiền)
+  paymentUserId Int
+
+  // Liên kết đến Student (sinh viên được gạch nợ)
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
+}

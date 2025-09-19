@@ -4,32 +4,32 @@ services:
   # =====================
   # PostgreSQL for Auth + Student
   # =====================
-  postgres-auth-student:
+  postgres-auth:
     image: postgres:15
-    container_name: postgres-auth-student
+    container_name: postgres-auth
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: auth_student
+      POSTGRES_DB: auth
     ports:
       - "5435:5432"
     volumes:
-      - postgres_auth_student_data:/var/lib/postgresql/data
+      - postgres_auth_data:/var/lib/postgresql/data
 
   # =====================
   # PostgreSQL for Payment
   # =====================
-  postgres-payment:
+  postgres-student:
     image: postgres:15
-    container_name: postgres-payment
+    container_name: postgres-student
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: payment
+      POSTGRES_DB: student
     ports:
       - "5434:5432"
     volumes:
-      - postgres_payment_data:/var/lib/postgresql/data
+      - postgres_student_data:/var/lib/postgresql/data
 
   # =====================
   # PostgreSQL for Notification
@@ -47,6 +47,6 @@ services:
       - postgres_notification_data:/var/lib/postgresql/data
 
 volumes:
-  postgres_auth_student_data:
-  postgres_payment_data:
+  postgres_auth_data:
+  postgres_student_data:
   postgres_notification_data:

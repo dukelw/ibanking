@@ -5,11 +5,12 @@
   "scripts": {
     "db": "docker compose -f docker-compose.db.yml up -d",
     "setup:auth": "cd auth-service && npm i && npx prisma generate && npx prisma migrate dev --name init && cd ..",
-    "setup:payment": "cd payment-service && npm i && npx prisma generate && npx prisma migrate dev --name init && cd ..",
+    "setup:student": "cd student-service && npm i && npx prisma generate && npx prisma migrate dev --name init && cd ..",
     "setup:notification": "cd notification-service && npm i && npx prisma generate && npx prisma migrate dev --name init && cd ..",
     "setup:frontend": "cd frontend && npm i && cd ..",
-    "setup": "npm run setup:auth && npm run setup:payment && npm run setup:notification && npm run setup:frontend",
-    "dev": "concurrently \"npm run start:dev --prefix auth-service\" \"npm run start:dev --prefix notification-service\" \"npm run start:dev --prefix payment-service\" \"npm run dev --prefix frontend\"",
+    "setup:gateway": "cd api-gateway && npm i && cd ..",
+    "setup": "npm run setup:auth && npm run setup:student && npm run setup:notification && npm run setup:frontend && npm run setup:gateway",
+    "dev": "concurrently \"npm run start:dev --prefix auth-service\" \"npm run start:dev --prefix notification-service\" \"npm run start:dev --prefix student-service\" \"npm run start:dev --prefix api-gateway\" \"npm run dev --prefix frontend\"",
     "start": "npm run db && npm run setup && npm run dev"
   }
 }

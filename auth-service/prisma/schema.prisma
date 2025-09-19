@@ -6,6 +6,8 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/prisma"
+
 }
 
 datasource db {
@@ -21,15 +23,4 @@ model User {
   phone     String @default("")
   balance   Float @default(0.00)
   createdAt DateTime @default(now())
-}
-model Student {
-  id        Int      @id @default(autoincrement())
-  sID       String?  @unique
-  name      String?
-  password  String  
-}
-model Tuition {
-  id        Int      @id @default(autoincrement())
-  status     String   
-  fee      Int
 }

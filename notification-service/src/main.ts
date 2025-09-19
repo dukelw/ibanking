@@ -16,12 +16,14 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
+  SwaggerModule.setup('api/docs', app, document);
 
   const port = process.env.PORT ?? 4002;
   await app.listen(port);
 
   console.log(`🚀 Notification service running: http://localhost:${port}`);
-  console.log(`📘 Swagger docs: http://localhost:${port}/api-docs`);
+  console.log(
+    `📘 Notification Swagger docs: http://localhost:${port}/api/docs`,
+  );
 }
 bootstrap();
