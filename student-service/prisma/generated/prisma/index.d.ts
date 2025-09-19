@@ -1102,6 +1102,10 @@ export namespace Prisma {
     sID: string | null
     name: string | null
     password: string | null
+    address: string | null
+    dateOfBirth: Date | null
+    email: string | null
+    phoneNumber: string | null
   }
 
   export type StudentMaxAggregateOutputType = {
@@ -1109,6 +1113,10 @@ export namespace Prisma {
     sID: string | null
     name: string | null
     password: string | null
+    address: string | null
+    dateOfBirth: Date | null
+    email: string | null
+    phoneNumber: string | null
   }
 
   export type StudentCountAggregateOutputType = {
@@ -1116,6 +1124,10 @@ export namespace Prisma {
     sID: number
     name: number
     password: number
+    address: number
+    dateOfBirth: number
+    email: number
+    phoneNumber: number
     _all: number
   }
 
@@ -1133,6 +1145,10 @@ export namespace Prisma {
     sID?: true
     name?: true
     password?: true
+    address?: true
+    dateOfBirth?: true
+    email?: true
+    phoneNumber?: true
   }
 
   export type StudentMaxAggregateInputType = {
@@ -1140,6 +1156,10 @@ export namespace Prisma {
     sID?: true
     name?: true
     password?: true
+    address?: true
+    dateOfBirth?: true
+    email?: true
+    phoneNumber?: true
   }
 
   export type StudentCountAggregateInputType = {
@@ -1147,6 +1167,10 @@ export namespace Prisma {
     sID?: true
     name?: true
     password?: true
+    address?: true
+    dateOfBirth?: true
+    email?: true
+    phoneNumber?: true
     _all?: true
   }
 
@@ -1241,6 +1265,10 @@ export namespace Prisma {
     sID: string
     name: string | null
     password: string
+    address: string | null
+    dateOfBirth: Date | null
+    email: string | null
+    phoneNumber: string | null
     _count: StudentCountAggregateOutputType | null
     _avg: StudentAvgAggregateOutputType | null
     _sum: StudentSumAggregateOutputType | null
@@ -1267,6 +1295,10 @@ export namespace Prisma {
     sID?: boolean
     name?: boolean
     password?: boolean
+    address?: boolean
+    dateOfBirth?: boolean
+    email?: boolean
+    phoneNumber?: boolean
     tuitions?: boolean | Student$tuitionsArgs<ExtArgs>
     transactions?: boolean | Student$transactionsArgs<ExtArgs>
     _count?: boolean | StudentCountOutputTypeDefaultArgs<ExtArgs>
@@ -1277,6 +1309,10 @@ export namespace Prisma {
     sID?: boolean
     name?: boolean
     password?: boolean
+    address?: boolean
+    dateOfBirth?: boolean
+    email?: boolean
+    phoneNumber?: boolean
   }, ExtArgs["result"]["student"]>
 
   export type StudentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1284,6 +1320,10 @@ export namespace Prisma {
     sID?: boolean
     name?: boolean
     password?: boolean
+    address?: boolean
+    dateOfBirth?: boolean
+    email?: boolean
+    phoneNumber?: boolean
   }, ExtArgs["result"]["student"]>
 
   export type StudentSelectScalar = {
@@ -1291,9 +1331,13 @@ export namespace Prisma {
     sID?: boolean
     name?: boolean
     password?: boolean
+    address?: boolean
+    dateOfBirth?: boolean
+    email?: boolean
+    phoneNumber?: boolean
   }
 
-  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sID" | "name" | "password", ExtArgs["result"]["student"]>
+  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sID" | "name" | "password" | "address" | "dateOfBirth" | "email" | "phoneNumber", ExtArgs["result"]["student"]>
   export type StudentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tuitions?: boolean | Student$tuitionsArgs<ExtArgs>
     transactions?: boolean | Student$transactionsArgs<ExtArgs>
@@ -1313,6 +1357,10 @@ export namespace Prisma {
       sID: string
       name: string | null
       password: string
+      address: string | null
+      dateOfBirth: Date | null
+      email: string | null
+      phoneNumber: string | null
     }, ExtArgs["result"]["student"]>
     composites: {}
   }
@@ -1742,6 +1790,10 @@ export namespace Prisma {
     readonly sID: FieldRef<"Student", 'String'>
     readonly name: FieldRef<"Student", 'String'>
     readonly password: FieldRef<"Student", 'String'>
+    readonly address: FieldRef<"Student", 'String'>
+    readonly dateOfBirth: FieldRef<"Student", 'DateTime'>
+    readonly email: FieldRef<"Student", 'String'>
+    readonly phoneNumber: FieldRef<"Student", 'String'>
   }
     
 
@@ -2223,6 +2275,8 @@ export namespace Prisma {
     sID: string | null
     status: string | null
     fee: number | null
+    startTime: Date | null
+    endTime: Date | null
   }
 
   export type TuitionMaxAggregateOutputType = {
@@ -2230,6 +2284,8 @@ export namespace Prisma {
     sID: string | null
     status: string | null
     fee: number | null
+    startTime: Date | null
+    endTime: Date | null
   }
 
   export type TuitionCountAggregateOutputType = {
@@ -2237,6 +2293,8 @@ export namespace Prisma {
     sID: number
     status: number
     fee: number
+    startTime: number
+    endTime: number
     _all: number
   }
 
@@ -2256,6 +2314,8 @@ export namespace Prisma {
     sID?: true
     status?: true
     fee?: true
+    startTime?: true
+    endTime?: true
   }
 
   export type TuitionMaxAggregateInputType = {
@@ -2263,6 +2323,8 @@ export namespace Prisma {
     sID?: true
     status?: true
     fee?: true
+    startTime?: true
+    endTime?: true
   }
 
   export type TuitionCountAggregateInputType = {
@@ -2270,6 +2332,8 @@ export namespace Prisma {
     sID?: true
     status?: true
     fee?: true
+    startTime?: true
+    endTime?: true
     _all?: true
   }
 
@@ -2364,6 +2428,8 @@ export namespace Prisma {
     sID: string
     status: string
     fee: number
+    startTime: Date
+    endTime: Date
     _count: TuitionCountAggregateOutputType | null
     _avg: TuitionAvgAggregateOutputType | null
     _sum: TuitionSumAggregateOutputType | null
@@ -2390,6 +2456,8 @@ export namespace Prisma {
     sID?: boolean
     status?: boolean
     fee?: boolean
+    startTime?: boolean
+    endTime?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tuition"]>
 
@@ -2398,6 +2466,8 @@ export namespace Prisma {
     sID?: boolean
     status?: boolean
     fee?: boolean
+    startTime?: boolean
+    endTime?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tuition"]>
 
@@ -2406,6 +2476,8 @@ export namespace Prisma {
     sID?: boolean
     status?: boolean
     fee?: boolean
+    startTime?: boolean
+    endTime?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tuition"]>
 
@@ -2414,9 +2486,11 @@ export namespace Prisma {
     sID?: boolean
     status?: boolean
     fee?: boolean
+    startTime?: boolean
+    endTime?: boolean
   }
 
-  export type TuitionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sID" | "status" | "fee", ExtArgs["result"]["tuition"]>
+  export type TuitionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sID" | "status" | "fee" | "startTime" | "endTime", ExtArgs["result"]["tuition"]>
   export type TuitionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | StudentDefaultArgs<ExtArgs>
   }
@@ -2437,6 +2511,8 @@ export namespace Prisma {
       sID: string
       status: string
       fee: number
+      startTime: Date
+      endTime: Date
     }, ExtArgs["result"]["tuition"]>
     composites: {}
   }
@@ -2865,6 +2941,8 @@ export namespace Prisma {
     readonly sID: FieldRef<"Tuition", 'String'>
     readonly status: FieldRef<"Tuition", 'String'>
     readonly fee: FieldRef<"Tuition", 'Int'>
+    readonly startTime: FieldRef<"Tuition", 'DateTime'>
+    readonly endTime: FieldRef<"Tuition", 'DateTime'>
   }
     
 
@@ -4401,7 +4479,11 @@ export namespace Prisma {
     id: 'id',
     sID: 'sID',
     name: 'name',
-    password: 'password'
+    password: 'password',
+    address: 'address',
+    dateOfBirth: 'dateOfBirth',
+    email: 'email',
+    phoneNumber: 'phoneNumber'
   };
 
   export type StudentScalarFieldEnum = (typeof StudentScalarFieldEnum)[keyof typeof StudentScalarFieldEnum]
@@ -4411,7 +4493,9 @@ export namespace Prisma {
     id: 'id',
     sID: 'sID',
     status: 'status',
-    fee: 'fee'
+    fee: 'fee',
+    startTime: 'startTime',
+    endTime: 'endTime'
   };
 
   export type TuitionScalarFieldEnum = (typeof TuitionScalarFieldEnum)[keyof typeof TuitionScalarFieldEnum]
@@ -4486,20 +4570,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Float'
-   */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float[]'
-   */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -4510,6 +4580,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -4524,6 +4608,10 @@ export namespace Prisma {
     sID?: StringFilter<"Student"> | string
     name?: StringNullableFilter<"Student"> | string | null
     password?: StringFilter<"Student"> | string
+    address?: StringNullableFilter<"Student"> | string | null
+    dateOfBirth?: DateTimeNullableFilter<"Student"> | Date | string | null
+    email?: StringNullableFilter<"Student"> | string | null
+    phoneNumber?: StringNullableFilter<"Student"> | string | null
     tuitions?: TuitionListRelationFilter
     transactions?: TransactionListRelationFilter
   }
@@ -4533,6 +4621,10 @@ export namespace Prisma {
     sID?: SortOrder
     name?: SortOrderInput | SortOrder
     password?: SortOrder
+    address?: SortOrderInput | SortOrder
+    dateOfBirth?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
+    phoneNumber?: SortOrderInput | SortOrder
     tuitions?: TuitionOrderByRelationAggregateInput
     transactions?: TransactionOrderByRelationAggregateInput
   }
@@ -4540,20 +4632,28 @@ export namespace Prisma {
   export type StudentWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     sID?: string
+    email?: string
+    phoneNumber?: string
     AND?: StudentWhereInput | StudentWhereInput[]
     OR?: StudentWhereInput[]
     NOT?: StudentWhereInput | StudentWhereInput[]
     name?: StringNullableFilter<"Student"> | string | null
     password?: StringFilter<"Student"> | string
+    address?: StringNullableFilter<"Student"> | string | null
+    dateOfBirth?: DateTimeNullableFilter<"Student"> | Date | string | null
     tuitions?: TuitionListRelationFilter
     transactions?: TransactionListRelationFilter
-  }, "id" | "sID">
+  }, "id" | "sID" | "email" | "phoneNumber">
 
   export type StudentOrderByWithAggregationInput = {
     id?: SortOrder
     sID?: SortOrder
     name?: SortOrderInput | SortOrder
     password?: SortOrder
+    address?: SortOrderInput | SortOrder
+    dateOfBirth?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
+    phoneNumber?: SortOrderInput | SortOrder
     _count?: StudentCountOrderByAggregateInput
     _avg?: StudentAvgOrderByAggregateInput
     _max?: StudentMaxOrderByAggregateInput
@@ -4569,6 +4669,10 @@ export namespace Prisma {
     sID?: StringWithAggregatesFilter<"Student"> | string
     name?: StringNullableWithAggregatesFilter<"Student"> | string | null
     password?: StringWithAggregatesFilter<"Student"> | string
+    address?: StringNullableWithAggregatesFilter<"Student"> | string | null
+    dateOfBirth?: DateTimeNullableWithAggregatesFilter<"Student"> | Date | string | null
+    email?: StringNullableWithAggregatesFilter<"Student"> | string | null
+    phoneNumber?: StringNullableWithAggregatesFilter<"Student"> | string | null
   }
 
   export type TuitionWhereInput = {
@@ -4579,6 +4683,8 @@ export namespace Prisma {
     sID?: StringFilter<"Tuition"> | string
     status?: StringFilter<"Tuition"> | string
     fee?: IntFilter<"Tuition"> | number
+    startTime?: DateTimeFilter<"Tuition"> | Date | string
+    endTime?: DateTimeFilter<"Tuition"> | Date | string
     student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
   }
 
@@ -4587,6 +4693,8 @@ export namespace Prisma {
     sID?: SortOrder
     status?: SortOrder
     fee?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
     student?: StudentOrderByWithRelationInput
   }
 
@@ -4598,6 +4706,8 @@ export namespace Prisma {
     sID?: StringFilter<"Tuition"> | string
     status?: StringFilter<"Tuition"> | string
     fee?: IntFilter<"Tuition"> | number
+    startTime?: DateTimeFilter<"Tuition"> | Date | string
+    endTime?: DateTimeFilter<"Tuition"> | Date | string
     student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
   }, "id">
 
@@ -4606,6 +4716,8 @@ export namespace Prisma {
     sID?: SortOrder
     status?: SortOrder
     fee?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
     _count?: TuitionCountOrderByAggregateInput
     _avg?: TuitionAvgOrderByAggregateInput
     _max?: TuitionMaxOrderByAggregateInput
@@ -4621,6 +4733,8 @@ export namespace Prisma {
     sID?: StringWithAggregatesFilter<"Tuition"> | string
     status?: StringWithAggregatesFilter<"Tuition"> | string
     fee?: IntWithAggregatesFilter<"Tuition"> | number
+    startTime?: DateTimeWithAggregatesFilter<"Tuition"> | Date | string
+    endTime?: DateTimeWithAggregatesFilter<"Tuition"> | Date | string
   }
 
   export type TransactionWhereInput = {
@@ -4684,6 +4798,10 @@ export namespace Prisma {
     sID: string
     name?: string | null
     password: string
+    address?: string | null
+    dateOfBirth?: Date | string | null
+    email?: string | null
+    phoneNumber?: string | null
     tuitions?: TuitionCreateNestedManyWithoutStudentInput
     transactions?: TransactionCreateNestedManyWithoutStudentInput
   }
@@ -4693,6 +4811,10 @@ export namespace Prisma {
     sID: string
     name?: string | null
     password: string
+    address?: string | null
+    dateOfBirth?: Date | string | null
+    email?: string | null
+    phoneNumber?: string | null
     tuitions?: TuitionUncheckedCreateNestedManyWithoutStudentInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutStudentInput
   }
@@ -4701,6 +4823,10 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     tuitions?: TuitionUpdateManyWithoutStudentNestedInput
     transactions?: TransactionUpdateManyWithoutStudentNestedInput
   }
@@ -4710,6 +4836,10 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     tuitions?: TuitionUncheckedUpdateManyWithoutStudentNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutStudentNestedInput
   }
@@ -4719,12 +4849,20 @@ export namespace Prisma {
     sID: string
     name?: string | null
     password: string
+    address?: string | null
+    dateOfBirth?: Date | string | null
+    email?: string | null
+    phoneNumber?: string | null
   }
 
   export type StudentUpdateManyMutationInput = {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type StudentUncheckedUpdateManyInput = {
@@ -4732,11 +4870,17 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TuitionCreateInput = {
     status?: string
     fee: number
+    startTime: Date | string
+    endTime: Date | string
     student: StudentCreateNestedOneWithoutTuitionsInput
   }
 
@@ -4745,11 +4889,15 @@ export namespace Prisma {
     sID: string
     status?: string
     fee: number
+    startTime: Date | string
+    endTime: Date | string
   }
 
   export type TuitionUpdateInput = {
     status?: StringFieldUpdateOperationsInput | string
     fee?: IntFieldUpdateOperationsInput | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
     student?: StudentUpdateOneRequiredWithoutTuitionsNestedInput
   }
 
@@ -4758,6 +4906,8 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     fee?: IntFieldUpdateOperationsInput | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TuitionCreateManyInput = {
@@ -4765,11 +4915,15 @@ export namespace Prisma {
     sID: string
     status?: string
     fee: number
+    startTime: Date | string
+    endTime: Date | string
   }
 
   export type TuitionUpdateManyMutationInput = {
     status?: StringFieldUpdateOperationsInput | string
     fee?: IntFieldUpdateOperationsInput | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TuitionUncheckedUpdateManyInput = {
@@ -4777,6 +4931,8 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     fee?: IntFieldUpdateOperationsInput | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TransactionCreateInput = {
@@ -4872,6 +5028,17 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type TuitionListRelationFilter = {
     every?: TuitionWhereInput
     some?: TuitionWhereInput
@@ -4902,6 +5069,10 @@ export namespace Prisma {
     sID?: SortOrder
     name?: SortOrder
     password?: SortOrder
+    address?: SortOrder
+    dateOfBirth?: SortOrder
+    email?: SortOrder
+    phoneNumber?: SortOrder
   }
 
   export type StudentAvgOrderByAggregateInput = {
@@ -4913,6 +5084,10 @@ export namespace Prisma {
     sID?: SortOrder
     name?: SortOrder
     password?: SortOrder
+    address?: SortOrder
+    dateOfBirth?: SortOrder
+    email?: SortOrder
+    phoneNumber?: SortOrder
   }
 
   export type StudentMinOrderByAggregateInput = {
@@ -4920,6 +5095,10 @@ export namespace Prisma {
     sID?: SortOrder
     name?: SortOrder
     password?: SortOrder
+    address?: SortOrder
+    dateOfBirth?: SortOrder
+    email?: SortOrder
+    phoneNumber?: SortOrder
   }
 
   export type StudentSumOrderByAggregateInput = {
@@ -4978,6 +5157,31 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
   export type StudentScalarRelationFilter = {
     is?: StudentWhereInput
     isNot?: StudentWhereInput
@@ -4988,6 +5192,8 @@ export namespace Prisma {
     sID?: SortOrder
     status?: SortOrder
     fee?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
   }
 
   export type TuitionAvgOrderByAggregateInput = {
@@ -5000,6 +5206,8 @@ export namespace Prisma {
     sID?: SortOrder
     status?: SortOrder
     fee?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
   }
 
   export type TuitionMinOrderByAggregateInput = {
@@ -5007,11 +5215,27 @@ export namespace Prisma {
     sID?: SortOrder
     status?: SortOrder
     fee?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
   }
 
   export type TuitionSumOrderByAggregateInput = {
     id?: SortOrder
     fee?: SortOrder
+  }
+
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type FloatFilter<$PrismaModel = never> = {
@@ -5023,17 +5247,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type TransactionCountOrderByAggregateInput = {
@@ -5090,20 +5303,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
   export type TuitionCreateNestedManyWithoutStudentInput = {
     create?: XOR<TuitionCreateWithoutStudentInput, TuitionUncheckedCreateWithoutStudentInput> | TuitionCreateWithoutStudentInput[] | TuitionUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: TuitionCreateOrConnectWithoutStudentInput | TuitionCreateOrConnectWithoutStudentInput[]
@@ -5138,6 +5337,10 @@ export namespace Prisma {
 
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type TuitionUpdateManyWithoutStudentNestedInput = {
@@ -5210,6 +5413,10 @@ export namespace Prisma {
     connect?: StudentWhereUniqueInput
   }
 
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
   export type StudentUpdateOneRequiredWithoutTuitionsNestedInput = {
     create?: XOR<StudentCreateWithoutTuitionsInput, StudentUncheckedCreateWithoutTuitionsInput>
     connectOrCreate?: StudentCreateOrConnectWithoutTuitionsInput
@@ -5230,10 +5437,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
   }
 
   export type StudentUpdateOneRequiredWithoutTransactionsNestedInput = {
@@ -5281,6 +5484,17 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -5355,6 +5569,20 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -5364,6 +5592,20 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -5382,29 +5624,19 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
   export type TuitionCreateWithoutStudentInput = {
     status?: string
     fee: number
+    startTime: Date | string
+    endTime: Date | string
   }
 
   export type TuitionUncheckedCreateWithoutStudentInput = {
     id?: number
     status?: string
     fee: number
+    startTime: Date | string
+    endTime: Date | string
   }
 
   export type TuitionCreateOrConnectWithoutStudentInput = {
@@ -5464,6 +5696,8 @@ export namespace Prisma {
     sID?: StringFilter<"Tuition"> | string
     status?: StringFilter<"Tuition"> | string
     fee?: IntFilter<"Tuition"> | number
+    startTime?: DateTimeFilter<"Tuition"> | Date | string
+    endTime?: DateTimeFilter<"Tuition"> | Date | string
   }
 
   export type TransactionUpsertWithWhereUniqueWithoutStudentInput = {
@@ -5497,6 +5731,10 @@ export namespace Prisma {
     sID: string
     name?: string | null
     password: string
+    address?: string | null
+    dateOfBirth?: Date | string | null
+    email?: string | null
+    phoneNumber?: string | null
     transactions?: TransactionCreateNestedManyWithoutStudentInput
   }
 
@@ -5505,6 +5743,10 @@ export namespace Prisma {
     sID: string
     name?: string | null
     password: string
+    address?: string | null
+    dateOfBirth?: Date | string | null
+    email?: string | null
+    phoneNumber?: string | null
     transactions?: TransactionUncheckedCreateNestedManyWithoutStudentInput
   }
 
@@ -5528,6 +5770,10 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     transactions?: TransactionUpdateManyWithoutStudentNestedInput
   }
 
@@ -5536,6 +5782,10 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     transactions?: TransactionUncheckedUpdateManyWithoutStudentNestedInput
   }
 
@@ -5543,6 +5793,10 @@ export namespace Prisma {
     sID: string
     name?: string | null
     password: string
+    address?: string | null
+    dateOfBirth?: Date | string | null
+    email?: string | null
+    phoneNumber?: string | null
     tuitions?: TuitionCreateNestedManyWithoutStudentInput
   }
 
@@ -5551,6 +5805,10 @@ export namespace Prisma {
     sID: string
     name?: string | null
     password: string
+    address?: string | null
+    dateOfBirth?: Date | string | null
+    email?: string | null
+    phoneNumber?: string | null
     tuitions?: TuitionUncheckedCreateNestedManyWithoutStudentInput
   }
 
@@ -5574,6 +5832,10 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     tuitions?: TuitionUpdateManyWithoutStudentNestedInput
   }
 
@@ -5582,6 +5844,10 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
     tuitions?: TuitionUncheckedUpdateManyWithoutStudentNestedInput
   }
 
@@ -5589,6 +5855,8 @@ export namespace Prisma {
     id?: number
     status?: string
     fee: number
+    startTime: Date | string
+    endTime: Date | string
   }
 
   export type TransactionCreateManyStudentInput = {
@@ -5601,18 +5869,24 @@ export namespace Prisma {
   export type TuitionUpdateWithoutStudentInput = {
     status?: StringFieldUpdateOperationsInput | string
     fee?: IntFieldUpdateOperationsInput | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TuitionUncheckedUpdateWithoutStudentInput = {
     id?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     fee?: IntFieldUpdateOperationsInput | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TuitionUncheckedUpdateManyWithoutStudentInput = {
     id?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     fee?: IntFieldUpdateOperationsInput | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TransactionUpdateWithoutStudentInput = {

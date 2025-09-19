@@ -19,17 +19,23 @@ model Student {
   sID          String        @unique
   name         String?
   password     String
+  address      String?
+  dateOfBirth  DateTime?
+  email        String?       @unique
+  phoneNumber  String?       @unique
   tuitions     Tuition[]
   // Quan hệ: một student có thể nhận nhiều transaction
   transactions Transaction[]
 }
 
 model Tuition {
-  id      Int     @id @default(autoincrement())
-  sID     String
-  status  String  @default("PENDING")
-  fee     Int
-  student Student @relation(fields: [sID], references: [sID])
+  id        Int      @id @default(autoincrement())
+  sID       String
+  status    String   @default("PENDING")
+  fee       Int
+  startTime DateTime
+  endTime   DateTime
+  student   Student  @relation(fields: [sID], references: [sID])
 }
 
 model Transaction {

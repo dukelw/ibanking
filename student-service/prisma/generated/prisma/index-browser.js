@@ -124,14 +124,20 @@ exports.Prisma.StudentScalarFieldEnum = {
   id: 'id',
   sID: 'sID',
   name: 'name',
-  password: 'password'
+  password: 'password',
+  address: 'address',
+  dateOfBirth: 'dateOfBirth',
+  email: 'email',
+  phoneNumber: 'phoneNumber'
 };
 
 exports.Prisma.TuitionScalarFieldEnum = {
   id: 'id',
   sID: 'sID',
   status: 'status',
-  fee: 'fee'
+  fee: 'fee',
+  startTime: 'startTime',
+  endTime: 'endTime'
 };
 
 exports.Prisma.TransactionScalarFieldEnum = {
