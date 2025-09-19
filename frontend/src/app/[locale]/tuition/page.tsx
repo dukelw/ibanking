@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useAuthStore } from "@/store/authStore";
+import { useEffect, useState } from "react";
 
 export default function TuitionPage() {
-  const [payer, setPayer] = useState({ fullName: "", phone: "", email: "" });
+  const { user } = useAuthStore();
+  const [payer, setPayer] = useState({
+    fullName: "",
+    phone: "",
+    email: "",
+    balance: 0,
+  });
   const [studentInfo, setStudentInfo] = useState({
     studentId: "",
     studentName: "",
     tuitionAmount: 0,
   });
   const [payment, setPayment] = useState({
-    balance: 0,
     amountToPay: 0,
     agreedTerms: false,
   });
@@ -30,6 +36,23 @@ export default function TuitionPage() {
   const handleConfirmOtp = () => {
     alert("Thanh toán thành công! (Demo)");
   };
+
+  useEffect(() => {
+    if (user) {
+      setPayer({
+        fullName: user.name || "",
+        phone: user.phone || "",
+        email: user.email || "",
+        balance: user.balance,
+      });
+
+      // setStudentInfo({
+      //   studentId: user.id || "",
+      //   studentName: user.fullName || "",
+      //   tuitionAmount: 0,
+      // });
+    }
+  }, [user]);
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-8">
@@ -109,7 +132,7 @@ export default function TuitionPage() {
               <input
                 type="number"
                 className="w-full p-2 rounded bg-gray-100 outline-none border-none"
-                value={payment.balance || ""}
+                value={payer.balance || ""}
                 readOnly
                 placeholder="Số dư khả dụng"
               />
