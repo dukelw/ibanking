@@ -46,6 +46,27 @@ export class EmailController {
   @ApiResponse({
     status: 201,
     description: 'Email queued/sent successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', example: 'a398fdd5-b62e-42ca-a4be-a45655aa53b8' },
+        to: { type: 'string', example: 'user@example.com' },
+        subject: { type: 'string', example: 'Welcome to our service' },
+        body: { type: 'string', example: '<p>Hello, your account has been created!</p>' },
+        userId: { type: 'string', example: 'user_12345' },
+        status: { type: 'string', example: 'SENT' },
+        createdAt: { type: 'string', example: '2025-09-19T14:09:07.124Z' },
+      },
+      example: {
+        id: 'a398fdd5-b62e-42ca-a4be-a45655aa53b8',
+        to: 'user@example.com',
+        subject: 'Welcome to our service',
+        body: '<p>Hello, your account has been created!</p>',
+        userId: 'user_12345',
+        status: 'SENT',
+        createdAt: '2025-09-19T14:09:07.124Z',
+      },
+    },
   })
   @ApiResponse({
     status: 500,
