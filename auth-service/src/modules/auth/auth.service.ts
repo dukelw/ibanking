@@ -35,13 +35,11 @@ export class AuthService {
       throw new UnauthorizedException('Email or password is incorrect');
     }
 
+    const { password: _, ...safeUser } = user; 
+
     return {
       message: 'Login successful',
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-      },
+      user: safeUser,
     };
   }
 }
