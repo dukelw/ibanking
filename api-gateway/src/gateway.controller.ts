@@ -10,18 +10,21 @@ export class GatewayController {
   @All('*')
   async proxy(@Req() req: Request, @Res() res: Response) {
     let target = '';
+    let path = req.originalUrl;
 
     if (req.path.startsWith('/auth')) {
       target = process.env.AUTH_API_URL!;
     } else if (req.path.startsWith('/student')) {
       target = process.env.STUDENT_API_URL!;
+      // luôn xóa /student khỏi URL
+      path = req.originalUrl.replace(/^\/student/, '');
     } else if (req.path.startsWith('/notification')) {
       target = process.env.NOTIFICATION_API_URL!;
     } else {
       return res.status(404).json({ message: 'Service not found' });
     }
 
-    const url = target + req.originalUrl;
+    const url = target + path;
     console.log('Proxy:', req.method, url, req.body);
 
     try {

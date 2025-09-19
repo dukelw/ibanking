@@ -1,90 +1,44 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { api } from "../lib/axios";
+import { removeAccessToken, setAccessToken } from "@/utils/token";
+import { api } from "@/lib/axios";
+
 import axios, { AxiosResponse } from "axios";
 
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/users`;
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/student`;
 
-export const userService = {
-  async getAll() {
+export const studentService = {
+  async signUp(studentId: string, password: string, name: string) {
     try {
-      const response: AxiosResponse = await api.get(`${API_URL}`);
-
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch users");
-    }
-  },
-
-  async getUsers(search?: string, page: number = 1, limit: number = 10) {
-    try {
-      const params: Record<string, any> = { page, limit };
-      if (search) params.search = search;
-
-      const response: AxiosResponse = await api.get(`${API_URL}/users`, {
-        params,
+      const response: AxiosResponse = await axios.post(`${API_URL}/register`, {
+        sID: studentId,
+        password,
+        name,
       });
+
       return response.data;
     } catch (error) {
-      throw new Error("Failed to fetch users");
+      throw new Error("Failed to sign up");
     }
   },
 
-  async updateProfile(data: {
-    name?: string;
-    phone?: string;
-    avatar?: string;
-    gender?: string;
-  }) {
+  // Đăng nhập
+  async signIn(studentId: string, password: string) {
     try {
-      const response: AxiosResponse = await api.put(
-        `${API_URL}/update-profile`,
-        data
-      );
+      const response: AxiosResponse = await axios.post(`${API_URL}/login`, {
+        sID: studentId,
+        password,
+      });
+
       return response.data;
     } catch (error) {
-      throw new Error("Failed to update profile");
+      throw new Error("Invalid credentials");
     }
   },
 
-  async updateUser(data: {
-    userId: number;
-    name?: string;
-    phone?: string;
-    avatar?: string;
-    gender?: string;
-  }) {
+  async logout() {
     try {
-      const response: AxiosResponse = await api.put(
-        `${API_URL}/update-user`,
-        data
-      );
-      return response.data;
     } catch (error) {
-      throw new Error("Failed to update user");
-    }
-  },
-
-  async toggleActiveUser(userId: number) {
-    try {
-      const response: AxiosResponse = await api.put(
-        `${API_URL}/toggle-active-user`,
-        { userId }
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to toggle user");
-    }
-  },
-
-  async changePassword(data: { currentPassword: string; newPassword: string }) {
-    try {
-      const response: AxiosResponse = await api.put(
-        `${API_URL}/change-password`,
-        data
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to change password");
+      throw new Error("Failed to log out");
     }
   },
 };
