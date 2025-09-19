@@ -26,7 +26,22 @@ export class AuthController {
     },
   })
 
-  @ApiResponse({ status: 201, description: 'User created successfully' })
+  @ApiResponse({
+    status: 201,
+    description: 'User created successfully',
+    schema: {
+      example: {
+        id: 11,
+        email: 'student@example.com',
+        name: 'Nguyen Van A',
+        password: '$2b$10$hash-password',
+        phone: '0123456789',
+        balance: 1000.5,
+        createdAt: '2025-09-19T13:55:55.006Z',
+      },
+    },
+  })
+
   @ApiBody({
     schema: {
       type: 'object',
@@ -63,7 +78,25 @@ export class AuthController {
       required: ['email', 'password'],
     },
   })
-  @ApiResponse({ status: 200, description: 'User logged in successfully' })
+
+  @ApiResponse({
+    status: 200,
+    description: 'User logged in successfully',
+    schema: {
+      example: {
+        user: {
+          id: 11,
+          email: 'student@example.com',
+          name: 'Nguyen Van A',
+          phone: '0123456789',
+          balance: 1000.5,
+          createdAt: '2025-09-19T13:55:55.006Z',
+        },
+        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...', // JWT token mẫu
+      },
+    },
+  })
+
   async login(
     @Body('email') email: string,
     @Body('password') password: string,
@@ -73,7 +106,42 @@ export class AuthController {
 
   @Get('users')
   @ApiOperation({ summary: 'Lấy danh sách user', description: 'Trả về toàn bộ user trong hệ thống' })
-  @ApiResponse({ status: 200, description: 'Danh sách user trả về thành công' })
+  @ApiResponse({
+    status: 200,
+    description: 'Danh sách user trả về thành công',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'number', example: 1 },
+          email: { type: 'string', example: 'student@example.com' },
+          name: { type: 'string', example: 'Nguyen Van A' },
+          phone: { type: 'string', example: '0123456789' },
+          balance: { type: 'number', example: 1000.5 },
+          createdAt: { type: 'string', example: '2025-09-19T13:55:55.006Z' },
+        },
+      },
+      example: [
+        {
+          id: 1,
+          email: 'student@example.com',
+          name: 'Nguyen Van A',
+          phone: '0123456789',
+          balance: 1000.5,
+          createdAt: '2025-09-19T13:55:55.006Z',
+        },
+        {
+          id: 2,
+          email: 'puahuhu@example.com',
+          name: 'Nguyen Van B',
+          phone: '',
+          balance: 0.0,
+          createdAt: '2025-09-19T14:00:00.006Z',
+        },
+      ],
+    },
+  })
   async findAll() {
     return this.authService.getUsers();
   }
