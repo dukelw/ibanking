@@ -79,26 +79,6 @@ export default function SignUp() {
           </Alert>
         )}
 
-        {/* OAuth buttons */}
-        <div className="flex flex-col gap-2 mt-4">
-          <Button
-            color="gray"
-            onClick={() => {
-              loginWithGoogle();
-            }}
-          >
-            Sign up with Google
-          </Button>
-          <Button
-            color="dark"
-            onClick={() => {
-              loginWithGithub();
-            }}
-          >
-            Sign up with GitHub
-          </Button>
-        </div>
-
         <div className="flex items-center my-4">
           <hr className="flex-grow border-gray-300" />
           <span className="px-2 text-gray-500">or</span>

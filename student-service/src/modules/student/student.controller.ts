@@ -98,6 +98,7 @@ export class StudentController {
       dto.address,
       dto.dateOfBirth,
     );
+
   }
 
   @Get()

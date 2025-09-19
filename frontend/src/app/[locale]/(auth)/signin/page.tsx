@@ -63,22 +63,6 @@ export default function SignIn() {
           <div className="text-center">
             <h1 className="text-2xl font-bold">{t("signIn")}</h1>
           </div>
-          <Button
-            color="gray"
-            onClick={() => {
-              loginWithGoogle();
-            }}
-          >
-            Sign up with Google
-          </Button>
-          <Button
-            color="dark"
-            onClick={() => {
-              loginWithGithub();
-            }}
-          >
-            Sign up with GitHub
-          </Button>
 
           <form onSubmit={handleSubmit} className="mt-2 space-y-4">
             {/* Email */}
@@ -133,24 +117,6 @@ export default function SignIn() {
               </div>
             </div>
 
-            {/* Remember & Forgot */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="remember"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                />
-                <Label htmlFor="remember">{t("rememberMe")}</Label>
-              </div>
-              <Link
-                href="/forgot-password"
-                className="text-sm text-blue-600 hover:underline"
-              >
-                {t("forgotPassword")}
-              </Link>
-            </div>
-
             {/* Submit */}
             <Button
               color="green"
@@ -167,14 +133,6 @@ export default function SignIn() {
               )}
             </Button>
           </form>
-
-          {/* Footer */}
-          <p className="text-center text-sm text-gray-600 mt-4">
-            {t("noAccount")}{" "}
-            <Link href="/signup" className="text-blue-600 hover:underline">
-              {t("signUp")}
-            </Link>
-          </p>
         </Card>
       </main>
     </>
