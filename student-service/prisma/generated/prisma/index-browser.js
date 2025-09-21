@@ -125,6 +125,7 @@ exports.Prisma.StudentScalarFieldEnum = {
   sID: 'sID',
   name: 'name',
   password: 'password',
+  balance: 'balance',
   address: 'address',
   dateOfBirth: 'dateOfBirth',
   email: 'email',
@@ -145,6 +146,7 @@ exports.Prisma.TransactionScalarFieldEnum = {
   amount: 'amount',
   createdAt: 'createdAt',
   paymentUserId: 'paymentUserId',
+  paymentAccountType: 'paymentAccountType',
   studentId: 'studentId'
 };
 
@@ -162,7 +164,10 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.PaymentAccountType = exports.$Enums.PaymentAccountType = {
+  STUDENT: 'STUDENT',
+  OTHER: 'OTHER'
+};
 
 exports.Prisma.ModelName = {
   Student: 'Student',

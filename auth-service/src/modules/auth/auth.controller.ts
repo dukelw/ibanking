@@ -1,6 +1,19 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBody,
+  ApiResponse,
+  ApiParam,
+} from '@nestjs/swagger';
 
 @ApiTags('AUTH') // nhóm AUTH trong Swagger
 @Controller('auth')
@@ -22,10 +35,9 @@ export class AuthController {
         phone: { type: 'string', example: '0123456789', default: '' },
         balance: { type: 'number', example: 1000.5, default: 0.0 },
       },
-      required: ['email', 'password'], 
+      required: ['email', 'password'],
     },
   })
-
   @ApiResponse({
     status: 201,
     description: 'User created successfully',
@@ -41,7 +53,6 @@ export class AuthController {
       },
     },
   })
-
   @ApiBody({
     schema: {
       type: 'object',
@@ -78,7 +89,6 @@ export class AuthController {
       required: ['email', 'password'],
     },
   })
-
   @ApiResponse({
     status: 200,
     description: 'User logged in successfully',
@@ -96,7 +106,6 @@ export class AuthController {
       },
     },
   })
-
   async login(
     @Body('email') email: string,
     @Body('password') password: string,
@@ -105,7 +114,10 @@ export class AuthController {
   }
 
   @Get('users')
-  @ApiOperation({ summary: 'Lấy danh sách user', description: 'Trả về toàn bộ user trong hệ thống' })
+  @ApiOperation({
+    summary: 'Lấy danh sách user',
+    description: 'Trả về toàn bộ user trong hệ thống',
+  })
   @ApiResponse({
     status: 200,
     description: 'Danh sách user trả về thành công',
@@ -144,5 +156,40 @@ export class AuthController {
   })
   async findAll() {
     return this.authService.getUsers();
+  }
+
+  @Post(':id/deduct-balance')
+  async deductBalance(@Param('id') id: number, @Body('amount') amount: number) {
+    return await this.authService.deductBalance(+id, amount);
+  }
+
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Lấy thông tin user theo ID',
+    description: 'Trả về chi tiết user dựa trên ID',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'User ID',
+    example: 1,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Thông tin user trả về thành công',
+    schema: {
+      example: {
+        id: 1,
+        email: 'student@example.com',
+        name: 'Nguyen Van A',
+        phone: '0123456789',
+        balance: 1000.5,
+        createdAt: '2025-09-19T13:55:55.006Z',
+      },
+    },
+  })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async getUserById(@Param('id', ParseIntPipe) id: number) {
+    return this.authService.getUserById(id);
   }
 }

@@ -19,6 +19,7 @@ model Student {
   sID          String        @unique
   name         String?
   password     String
+  balance      Int           @default(0)
   address      String?
   dateOfBirth  DateTime?
   email        String?       @unique
@@ -32,10 +33,15 @@ model Tuition {
   id        Int      @id @default(autoincrement())
   sID       String
   status    String   @default("PENDING")
-  fee       Int
+  fee       Int      @default(0)
   startTime DateTime
   endTime   DateTime
   student   Student  @relation(fields: [sID], references: [sID])
+}
+
+enum PaymentAccountType {
+  STUDENT
+  OTHER
 }
 
 model Transaction {
@@ -44,9 +50,10 @@ model Transaction {
   createdAt DateTime @default(now())
 
   // Liên kết đến User (người nộp tiền)
-  paymentUserId Int
+  paymentUserId      Int
+  paymentAccountType PaymentAccountType?
 
   // Liên kết đến Student (sinh viên được gạch nợ)
-  studentId Int
-  student   Student @relation(fields: [studentId], references: [id])
+  studentId String
+  student   Student @relation(fields: [studentId], references: [sID])
 }

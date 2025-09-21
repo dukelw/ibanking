@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -35,11 +40,47 @@ export class AuthService {
       throw new UnauthorizedException('Email or password is incorrect');
     }
 
-    const { password: _, ...safeUser } = user; 
+    const { password: _, ...safeUser } = user;
 
     return {
       message: 'Login successful',
       user: safeUser,
     };
+  }
+
+  async deductBalance(id: number, amount: number) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('User not found');
+    if (user.balance < amount)
+      throw new BadRequestException('Not enough balance');
+
+    const updatedUser = await this.prisma.user.update({
+      where: { id },
+      data: { balance: { decrement: amount } },
+    });
+
+    return {
+      message: 'Balance deducted',
+      newBalance: updatedUser.balance,
+    };
+  }
+
+  async getUserById(id: number) {
+    const student = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        balance: true,
+      },
+    });
+
+    if (!student) {
+      throw new NotFoundException(`Student with ID ${id} not found`);
+    }
+
+    return student;
   }
 }

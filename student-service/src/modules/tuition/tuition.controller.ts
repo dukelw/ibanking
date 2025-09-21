@@ -1,10 +1,20 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiBody,
   ApiProperty,
+  ApiQuery,
+  ApiParam,
 } from '@nestjs/swagger';
 import { TuitionService } from './tuition.service';
 
@@ -108,7 +118,11 @@ export class TuitionController {
   @Post('create')
   @ApiOperation({ summary: 'Create new tuition record' })
   @ApiBody({ type: CreateTuitionDto })
-  @ApiResponse({ status: 201, description: 'Tuition created successfully', type: TuitionWithStudentResponseDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Tuition created successfully',
+    type: TuitionWithStudentResponseDto,
+  })
   @ApiResponse({ status: 404, description: 'Student not found' })
   async createTuition(@Body() dto: CreateTuitionDto) {
     return this.tuitionService.createTuition(
@@ -122,22 +136,57 @@ export class TuitionController {
 
   @Get()
   @ApiOperation({ summary: 'Get all tuition records' })
-  @ApiResponse({ status: 200, description: 'List of tuitions', type: [TuitionWithStudentResponseDto] })
-  async findAll() {
-    return this.tuitionService.getTuitions();
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    description: 'Filter by status (e.g. PENDING, PAID, CANCELLED)',
+    type: String,
+    example: 'PENDING',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of tuitions',
+    type: [TuitionWithStudentResponseDto],
+  })
+  async findAll(@Query('status') status?: string) {
+    return this.tuitionService.getTuitions(status);
   }
 
   @Get(':sID')
   @ApiOperation({ summary: 'Get tuition by student ID' })
-  @ApiResponse({ status: 200, description: 'Tuition records of student', type: [TuitionWithStudentResponseDto] })
+  @ApiParam({
+    name: 'sID',
+    type: String,
+    description: 'Student ID (mã sinh viên)',
+    example: 'SV001',
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    description: 'Filter by tuition status (e.g. PENDING, PAID, CANCELLED)',
+    type: String,
+    example: 'PENDING',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Tuition records of student',
+    type: [TuitionWithStudentResponseDto],
+  })
   @ApiResponse({ status: 404, description: 'No tuition found' })
-  async getTuitionByStudentId(@Param('sID') sID: string) {
-    return this.tuitionService.getTuitionByStudentId(sID);
+  async getTuitionByStudentId(
+    @Param('sID') sID: string,
+    @Query('status') status?: string,
+  ) {
+    return this.tuitionService.getTuitionByStudentId(sID, status);
   }
   @Patch('update/:id')
   @ApiOperation({ summary: 'Update tuition (by tuition id)' })
   @ApiBody({ type: UpdateTuitionDto })
-  @ApiResponse({ status: 200, description: 'Tuition updated successfully', type: TuitionWithStudentResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Tuition updated successfully',
+    type: TuitionWithStudentResponseDto,
+  })
   @ApiResponse({ status: 404, description: 'Tuition not found' })
   async updateTuition(@Param('id') id: string, @Body() dto: UpdateTuitionDto) {
     return this.tuitionService.updateTuition(Number(id), dto.status, dto.fee);

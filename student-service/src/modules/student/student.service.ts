@@ -1,10 +1,19 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { firstValueFrom } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class StudentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private httpService: HttpService,
+  ) {}
 
   async createStudent(
     sID: string,
@@ -39,8 +48,6 @@ export class StudentService {
     });
   }
 
-
-
   async getStudents() {
     return this.prisma.student.findMany({
       select: {
@@ -55,9 +62,9 @@ export class StudentService {
     });
   }
 
-  async getStudentById(sID: string) {
+  async getStudentById(id: number) {
     const student = await this.prisma.student.findUnique({
-      where: { sID },
+      where: { id },
       select: {
         id: true,
         sID: true,
@@ -66,11 +73,12 @@ export class StudentService {
         phoneNumber: true,
         address: true,
         dateOfBirth: true,
+        balance: true,
       },
     });
 
     if (!student) {
-      throw new NotFoundException(`Student with ID ${sID} not found`);
+      throw new NotFoundException(`Student with ID ${id} not found`);
     }
 
     return student;
@@ -98,10 +106,76 @@ export class StudentService {
         sID: student.sID,
         name: student.name,
         email: student.email,
-        phoneNumber: student.phoneNumber,
+        phone: student.phoneNumber,
         address: student.address,
         dateOfBirth: student.dateOfBirth,
+        balance: student.balance,
       },
     };
+  }
+
+  async payTuition(
+    studentId: string,
+    tuitionId: number,
+    payerId: number,
+    payerType: 'STUDENT' | 'OTHER',
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const tuition = await tx.tuition.findUnique({ where: { id: tuitionId } });
+      if (!tuition) throw new NotFoundException('Tuition not found');
+      if (tuition.status === 'PAYED') throw new Error('Already paid');
+
+      console.log(studentId);
+      const student = await tx.student.findUnique({
+        where: { sID: studentId },
+      });
+      if (!student) throw new NotFoundException('Student not found');
+
+      if (payerType === 'STUDENT') {
+        const payer = await tx.student.findUnique({ where: { id: payerId } });
+        if (!payer) throw new NotFoundException('Payer student not found');
+        if (payer.balance < tuition.fee) throw new Error('Not enough balance');
+
+        console.log(payerId, payer);
+        await tx.student.update({
+          where: { id: payerId },
+          data: { balance: { decrement: tuition.fee } },
+        });
+      } else if (payerType === 'OTHER') {
+        // gọi sang auth-service để trừ tiền
+        try {
+          await firstValueFrom(
+            this.httpService.post(
+              `${process.env.AUTH_SERVICE}/auth/${payerId}/deduct-balance`,
+              { amount: tuition.fee },
+            ),
+          );
+        } catch (err) {
+          throw new Error(
+            `Auth service error: ${err.response?.data?.message || err.message}`,
+          );
+        }
+      }
+
+      const updatedTuition = await tx.tuition.update({
+        where: { id: tuitionId },
+        data: { status: 'PAID' },
+      });
+
+      await tx.transaction.create({
+        data: {
+          amount: tuition.fee,
+          paymentUserId: payerId,
+          paymentAccountType: payerType,
+          studentId: student.sID,
+        },
+      });
+
+      return {
+        message: 'Payment success',
+        tuitionId: updatedTuition.id,
+        tuitionStatus: updatedTuition.status,
+      };
+    });
   }
 }

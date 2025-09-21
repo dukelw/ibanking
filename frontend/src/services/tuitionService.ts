@@ -27,14 +27,14 @@ export const tuitionService = {
 
       return response.data;
     } catch (error) {
-      throw new Error("Invalid credentials");
+      throw new Error("Error when get student tuition");
     }
   },
 
-  async getStudentTuition(studentId: string) {
+  async getStudentTuition(studentId: string, status: string) {
     try {
       const response: AxiosResponse = await axios.get(
-        `${API_URL}/detail?sID=${studentId}`
+        `${API_URL}/${studentId}?status=${status}`
       );
 
       return response.data;

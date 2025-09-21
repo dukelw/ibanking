@@ -7,17 +7,13 @@ import axios, { AxiosResponse } from "axios";
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/auth`;
 
 export const authService = {
-  async signUp(email: string, password: string, name: string) {
+  async getUser(id: number) {
     try {
-      const response: AxiosResponse = await axios.post(`${API_URL}/register`, {
-        email,
-        password,
-        name,
-      });
+      const response: AxiosResponse = await axios.get(`${API_URL}/${id}`);
 
       return response.data;
     } catch (error) {
-      throw new Error("Failed to sign up");
+      throw new Error("Error when get student tuition");
     }
   },
 

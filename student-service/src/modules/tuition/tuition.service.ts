@@ -46,8 +46,9 @@ export class TuitionService {
     });
   }
 
-  async getTuitions() {
+  async getTuitions(status?: string) {
     return this.prisma.tuition.findMany({
+      where: status ? { status } : {},
       include: {
         student: {
           select: {
@@ -64,9 +65,12 @@ export class TuitionService {
     });
   }
 
-  async getTuitionByStudentId(sID: string) {
+  async getTuitionByStudentId(sID: string, status?: string) {
     const tuition = await this.prisma.tuition.findMany({
-      where: { sID },
+      where: {
+        sID,
+        ...(status ? { status } : {}),
+      },
       include: {
         student: {
           select: {
@@ -81,12 +85,6 @@ export class TuitionService {
         },
       },
     });
-
-    if (!tuition || tuition.length === 0) {
-      throw new NotFoundException(
-        `No tuition found for student with sID: ${sID}`,
-      );
-    }
 
     return tuition;
   }

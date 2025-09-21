@@ -30,6 +30,23 @@ export type Tuition = $Result.DefaultSelection<Prisma.$TuitionPayload>
 export type Transaction = $Result.DefaultSelection<Prisma.$TransactionPayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const PaymentAccountType: {
+  STUDENT: 'STUDENT',
+  OTHER: 'OTHER'
+};
+
+export type PaymentAccountType = (typeof PaymentAccountType)[keyof typeof PaymentAccountType]
+
+}
+
+export type PaymentAccountType = $Enums.PaymentAccountType
+
+export const PaymentAccountType: typeof $Enums.PaymentAccountType
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -1091,10 +1108,12 @@ export namespace Prisma {
 
   export type StudentAvgAggregateOutputType = {
     id: number | null
+    balance: number | null
   }
 
   export type StudentSumAggregateOutputType = {
     id: number | null
+    balance: number | null
   }
 
   export type StudentMinAggregateOutputType = {
@@ -1102,6 +1121,7 @@ export namespace Prisma {
     sID: string | null
     name: string | null
     password: string | null
+    balance: number | null
     address: string | null
     dateOfBirth: Date | null
     email: string | null
@@ -1113,6 +1133,7 @@ export namespace Prisma {
     sID: string | null
     name: string | null
     password: string | null
+    balance: number | null
     address: string | null
     dateOfBirth: Date | null
     email: string | null
@@ -1124,6 +1145,7 @@ export namespace Prisma {
     sID: number
     name: number
     password: number
+    balance: number
     address: number
     dateOfBirth: number
     email: number
@@ -1134,10 +1156,12 @@ export namespace Prisma {
 
   export type StudentAvgAggregateInputType = {
     id?: true
+    balance?: true
   }
 
   export type StudentSumAggregateInputType = {
     id?: true
+    balance?: true
   }
 
   export type StudentMinAggregateInputType = {
@@ -1145,6 +1169,7 @@ export namespace Prisma {
     sID?: true
     name?: true
     password?: true
+    balance?: true
     address?: true
     dateOfBirth?: true
     email?: true
@@ -1156,6 +1181,7 @@ export namespace Prisma {
     sID?: true
     name?: true
     password?: true
+    balance?: true
     address?: true
     dateOfBirth?: true
     email?: true
@@ -1167,6 +1193,7 @@ export namespace Prisma {
     sID?: true
     name?: true
     password?: true
+    balance?: true
     address?: true
     dateOfBirth?: true
     email?: true
@@ -1265,6 +1292,7 @@ export namespace Prisma {
     sID: string
     name: string | null
     password: string
+    balance: number
     address: string | null
     dateOfBirth: Date | null
     email: string | null
@@ -1295,6 +1323,7 @@ export namespace Prisma {
     sID?: boolean
     name?: boolean
     password?: boolean
+    balance?: boolean
     address?: boolean
     dateOfBirth?: boolean
     email?: boolean
@@ -1309,6 +1338,7 @@ export namespace Prisma {
     sID?: boolean
     name?: boolean
     password?: boolean
+    balance?: boolean
     address?: boolean
     dateOfBirth?: boolean
     email?: boolean
@@ -1320,6 +1350,7 @@ export namespace Prisma {
     sID?: boolean
     name?: boolean
     password?: boolean
+    balance?: boolean
     address?: boolean
     dateOfBirth?: boolean
     email?: boolean
@@ -1331,13 +1362,14 @@ export namespace Prisma {
     sID?: boolean
     name?: boolean
     password?: boolean
+    balance?: boolean
     address?: boolean
     dateOfBirth?: boolean
     email?: boolean
     phoneNumber?: boolean
   }
 
-  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sID" | "name" | "password" | "address" | "dateOfBirth" | "email" | "phoneNumber", ExtArgs["result"]["student"]>
+  export type StudentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sID" | "name" | "password" | "balance" | "address" | "dateOfBirth" | "email" | "phoneNumber", ExtArgs["result"]["student"]>
   export type StudentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tuitions?: boolean | Student$tuitionsArgs<ExtArgs>
     transactions?: boolean | Student$transactionsArgs<ExtArgs>
@@ -1357,6 +1389,7 @@ export namespace Prisma {
       sID: string
       name: string | null
       password: string
+      balance: number
       address: string | null
       dateOfBirth: Date | null
       email: string | null
@@ -1790,6 +1823,7 @@ export namespace Prisma {
     readonly sID: FieldRef<"Student", 'String'>
     readonly name: FieldRef<"Student", 'String'>
     readonly password: FieldRef<"Student", 'String'>
+    readonly balance: FieldRef<"Student", 'Int'>
     readonly address: FieldRef<"Student", 'String'>
     readonly dateOfBirth: FieldRef<"Student", 'DateTime'>
     readonly email: FieldRef<"Student", 'String'>
@@ -3373,14 +3407,12 @@ export namespace Prisma {
     id: number | null
     amount: number | null
     paymentUserId: number | null
-    studentId: number | null
   }
 
   export type TransactionSumAggregateOutputType = {
     id: number | null
     amount: number | null
     paymentUserId: number | null
-    studentId: number | null
   }
 
   export type TransactionMinAggregateOutputType = {
@@ -3388,7 +3420,8 @@ export namespace Prisma {
     amount: number | null
     createdAt: Date | null
     paymentUserId: number | null
-    studentId: number | null
+    paymentAccountType: $Enums.PaymentAccountType | null
+    studentId: string | null
   }
 
   export type TransactionMaxAggregateOutputType = {
@@ -3396,7 +3429,8 @@ export namespace Prisma {
     amount: number | null
     createdAt: Date | null
     paymentUserId: number | null
-    studentId: number | null
+    paymentAccountType: $Enums.PaymentAccountType | null
+    studentId: string | null
   }
 
   export type TransactionCountAggregateOutputType = {
@@ -3404,6 +3438,7 @@ export namespace Prisma {
     amount: number
     createdAt: number
     paymentUserId: number
+    paymentAccountType: number
     studentId: number
     _all: number
   }
@@ -3413,14 +3448,12 @@ export namespace Prisma {
     id?: true
     amount?: true
     paymentUserId?: true
-    studentId?: true
   }
 
   export type TransactionSumAggregateInputType = {
     id?: true
     amount?: true
     paymentUserId?: true
-    studentId?: true
   }
 
   export type TransactionMinAggregateInputType = {
@@ -3428,6 +3461,7 @@ export namespace Prisma {
     amount?: true
     createdAt?: true
     paymentUserId?: true
+    paymentAccountType?: true
     studentId?: true
   }
 
@@ -3436,6 +3470,7 @@ export namespace Prisma {
     amount?: true
     createdAt?: true
     paymentUserId?: true
+    paymentAccountType?: true
     studentId?: true
   }
 
@@ -3444,6 +3479,7 @@ export namespace Prisma {
     amount?: true
     createdAt?: true
     paymentUserId?: true
+    paymentAccountType?: true
     studentId?: true
     _all?: true
   }
@@ -3539,7 +3575,8 @@ export namespace Prisma {
     amount: number
     createdAt: Date
     paymentUserId: number
-    studentId: number
+    paymentAccountType: $Enums.PaymentAccountType | null
+    studentId: string
     _count: TransactionCountAggregateOutputType | null
     _avg: TransactionAvgAggregateOutputType | null
     _sum: TransactionSumAggregateOutputType | null
@@ -3566,6 +3603,7 @@ export namespace Prisma {
     amount?: boolean
     createdAt?: boolean
     paymentUserId?: boolean
+    paymentAccountType?: boolean
     studentId?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
@@ -3575,6 +3613,7 @@ export namespace Prisma {
     amount?: boolean
     createdAt?: boolean
     paymentUserId?: boolean
+    paymentAccountType?: boolean
     studentId?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
@@ -3584,6 +3623,7 @@ export namespace Prisma {
     amount?: boolean
     createdAt?: boolean
     paymentUserId?: boolean
+    paymentAccountType?: boolean
     studentId?: boolean
     student?: boolean | StudentDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
@@ -3593,10 +3633,11 @@ export namespace Prisma {
     amount?: boolean
     createdAt?: boolean
     paymentUserId?: boolean
+    paymentAccountType?: boolean
     studentId?: boolean
   }
 
-  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "amount" | "createdAt" | "paymentUserId" | "studentId", ExtArgs["result"]["transaction"]>
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "amount" | "createdAt" | "paymentUserId" | "paymentAccountType" | "studentId", ExtArgs["result"]["transaction"]>
   export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     student?: boolean | StudentDefaultArgs<ExtArgs>
   }
@@ -3617,7 +3658,8 @@ export namespace Prisma {
       amount: number
       createdAt: Date
       paymentUserId: number
-      studentId: number
+      paymentAccountType: $Enums.PaymentAccountType | null
+      studentId: string
     }, ExtArgs["result"]["transaction"]>
     composites: {}
   }
@@ -4046,7 +4088,8 @@ export namespace Prisma {
     readonly amount: FieldRef<"Transaction", 'Float'>
     readonly createdAt: FieldRef<"Transaction", 'DateTime'>
     readonly paymentUserId: FieldRef<"Transaction", 'Int'>
-    readonly studentId: FieldRef<"Transaction", 'Int'>
+    readonly paymentAccountType: FieldRef<"Transaction", 'PaymentAccountType'>
+    readonly studentId: FieldRef<"Transaction", 'String'>
   }
     
 
@@ -4480,6 +4523,7 @@ export namespace Prisma {
     sID: 'sID',
     name: 'name',
     password: 'password',
+    balance: 'balance',
     address: 'address',
     dateOfBirth: 'dateOfBirth',
     email: 'email',
@@ -4506,6 +4550,7 @@ export namespace Prisma {
     amount: 'amount',
     createdAt: 'createdAt',
     paymentUserId: 'paymentUserId',
+    paymentAccountType: 'paymentAccountType',
     studentId: 'studentId'
   };
 
@@ -4595,6 +4640,20 @@ export namespace Prisma {
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
+
+
+  /**
+   * Reference to a field of type 'PaymentAccountType'
+   */
+  export type EnumPaymentAccountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentAccountType'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentAccountType[]'
+   */
+  export type ListEnumPaymentAccountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentAccountType[]'>
+    
   /**
    * Deep Input Types
    */
@@ -4608,6 +4667,7 @@ export namespace Prisma {
     sID?: StringFilter<"Student"> | string
     name?: StringNullableFilter<"Student"> | string | null
     password?: StringFilter<"Student"> | string
+    balance?: IntFilter<"Student"> | number
     address?: StringNullableFilter<"Student"> | string | null
     dateOfBirth?: DateTimeNullableFilter<"Student"> | Date | string | null
     email?: StringNullableFilter<"Student"> | string | null
@@ -4621,6 +4681,7 @@ export namespace Prisma {
     sID?: SortOrder
     name?: SortOrderInput | SortOrder
     password?: SortOrder
+    balance?: SortOrder
     address?: SortOrderInput | SortOrder
     dateOfBirth?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
@@ -4639,6 +4700,7 @@ export namespace Prisma {
     NOT?: StudentWhereInput | StudentWhereInput[]
     name?: StringNullableFilter<"Student"> | string | null
     password?: StringFilter<"Student"> | string
+    balance?: IntFilter<"Student"> | number
     address?: StringNullableFilter<"Student"> | string | null
     dateOfBirth?: DateTimeNullableFilter<"Student"> | Date | string | null
     tuitions?: TuitionListRelationFilter
@@ -4650,6 +4712,7 @@ export namespace Prisma {
     sID?: SortOrder
     name?: SortOrderInput | SortOrder
     password?: SortOrder
+    balance?: SortOrder
     address?: SortOrderInput | SortOrder
     dateOfBirth?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
@@ -4669,6 +4732,7 @@ export namespace Prisma {
     sID?: StringWithAggregatesFilter<"Student"> | string
     name?: StringNullableWithAggregatesFilter<"Student"> | string | null
     password?: StringWithAggregatesFilter<"Student"> | string
+    balance?: IntWithAggregatesFilter<"Student"> | number
     address?: StringNullableWithAggregatesFilter<"Student"> | string | null
     dateOfBirth?: DateTimeNullableWithAggregatesFilter<"Student"> | Date | string | null
     email?: StringNullableWithAggregatesFilter<"Student"> | string | null
@@ -4745,7 +4809,8 @@ export namespace Prisma {
     amount?: FloatFilter<"Transaction"> | number
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
     paymentUserId?: IntFilter<"Transaction"> | number
-    studentId?: IntFilter<"Transaction"> | number
+    paymentAccountType?: EnumPaymentAccountTypeNullableFilter<"Transaction"> | $Enums.PaymentAccountType | null
+    studentId?: StringFilter<"Transaction"> | string
     student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
   }
 
@@ -4754,6 +4819,7 @@ export namespace Prisma {
     amount?: SortOrder
     createdAt?: SortOrder
     paymentUserId?: SortOrder
+    paymentAccountType?: SortOrderInput | SortOrder
     studentId?: SortOrder
     student?: StudentOrderByWithRelationInput
   }
@@ -4766,7 +4832,8 @@ export namespace Prisma {
     amount?: FloatFilter<"Transaction"> | number
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
     paymentUserId?: IntFilter<"Transaction"> | number
-    studentId?: IntFilter<"Transaction"> | number
+    paymentAccountType?: EnumPaymentAccountTypeNullableFilter<"Transaction"> | $Enums.PaymentAccountType | null
+    studentId?: StringFilter<"Transaction"> | string
     student?: XOR<StudentScalarRelationFilter, StudentWhereInput>
   }, "id">
 
@@ -4775,6 +4842,7 @@ export namespace Prisma {
     amount?: SortOrder
     createdAt?: SortOrder
     paymentUserId?: SortOrder
+    paymentAccountType?: SortOrderInput | SortOrder
     studentId?: SortOrder
     _count?: TransactionCountOrderByAggregateInput
     _avg?: TransactionAvgOrderByAggregateInput
@@ -4791,13 +4859,15 @@ export namespace Prisma {
     amount?: FloatWithAggregatesFilter<"Transaction"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
     paymentUserId?: IntWithAggregatesFilter<"Transaction"> | number
-    studentId?: IntWithAggregatesFilter<"Transaction"> | number
+    paymentAccountType?: EnumPaymentAccountTypeNullableWithAggregatesFilter<"Transaction"> | $Enums.PaymentAccountType | null
+    studentId?: StringWithAggregatesFilter<"Transaction"> | string
   }
 
   export type StudentCreateInput = {
     sID: string
     name?: string | null
     password: string
+    balance?: number
     address?: string | null
     dateOfBirth?: Date | string | null
     email?: string | null
@@ -4811,6 +4881,7 @@ export namespace Prisma {
     sID: string
     name?: string | null
     password: string
+    balance?: number
     address?: string | null
     dateOfBirth?: Date | string | null
     email?: string | null
@@ -4823,6 +4894,7 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
     address?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4836,6 +4908,7 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
     address?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4849,6 +4922,7 @@ export namespace Prisma {
     sID: string
     name?: string | null
     password: string
+    balance?: number
     address?: string | null
     dateOfBirth?: Date | string | null
     email?: string | null
@@ -4859,6 +4933,7 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
     address?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4870,6 +4945,7 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
     address?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4878,7 +4954,7 @@ export namespace Prisma {
 
   export type TuitionCreateInput = {
     status?: string
-    fee: number
+    fee?: number
     startTime: Date | string
     endTime: Date | string
     student: StudentCreateNestedOneWithoutTuitionsInput
@@ -4888,7 +4964,7 @@ export namespace Prisma {
     id?: number
     sID: string
     status?: string
-    fee: number
+    fee?: number
     startTime: Date | string
     endTime: Date | string
   }
@@ -4914,7 +4990,7 @@ export namespace Prisma {
     id?: number
     sID: string
     status?: string
-    fee: number
+    fee?: number
     startTime: Date | string
     endTime: Date | string
   }
@@ -4939,6 +5015,7 @@ export namespace Prisma {
     amount: number
     createdAt?: Date | string
     paymentUserId: number
+    paymentAccountType?: $Enums.PaymentAccountType | null
     student: StudentCreateNestedOneWithoutTransactionsInput
   }
 
@@ -4947,13 +5024,15 @@ export namespace Prisma {
     amount: number
     createdAt?: Date | string
     paymentUserId: number
-    studentId: number
+    paymentAccountType?: $Enums.PaymentAccountType | null
+    studentId: string
   }
 
   export type TransactionUpdateInput = {
     amount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentUserId?: IntFieldUpdateOperationsInput | number
+    paymentAccountType?: NullableEnumPaymentAccountTypeFieldUpdateOperationsInput | $Enums.PaymentAccountType | null
     student?: StudentUpdateOneRequiredWithoutTransactionsNestedInput
   }
 
@@ -4962,7 +5041,8 @@ export namespace Prisma {
     amount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentUserId?: IntFieldUpdateOperationsInput | number
-    studentId?: IntFieldUpdateOperationsInput | number
+    paymentAccountType?: NullableEnumPaymentAccountTypeFieldUpdateOperationsInput | $Enums.PaymentAccountType | null
+    studentId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TransactionCreateManyInput = {
@@ -4970,13 +5050,15 @@ export namespace Prisma {
     amount: number
     createdAt?: Date | string
     paymentUserId: number
-    studentId: number
+    paymentAccountType?: $Enums.PaymentAccountType | null
+    studentId: string
   }
 
   export type TransactionUpdateManyMutationInput = {
     amount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentUserId?: IntFieldUpdateOperationsInput | number
+    paymentAccountType?: NullableEnumPaymentAccountTypeFieldUpdateOperationsInput | $Enums.PaymentAccountType | null
   }
 
   export type TransactionUncheckedUpdateManyInput = {
@@ -4984,7 +5066,8 @@ export namespace Prisma {
     amount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentUserId?: IntFieldUpdateOperationsInput | number
-    studentId?: IntFieldUpdateOperationsInput | number
+    paymentAccountType?: NullableEnumPaymentAccountTypeFieldUpdateOperationsInput | $Enums.PaymentAccountType | null
+    studentId?: StringFieldUpdateOperationsInput | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -5069,6 +5152,7 @@ export namespace Prisma {
     sID?: SortOrder
     name?: SortOrder
     password?: SortOrder
+    balance?: SortOrder
     address?: SortOrder
     dateOfBirth?: SortOrder
     email?: SortOrder
@@ -5077,6 +5161,7 @@ export namespace Prisma {
 
   export type StudentAvgOrderByAggregateInput = {
     id?: SortOrder
+    balance?: SortOrder
   }
 
   export type StudentMaxOrderByAggregateInput = {
@@ -5084,6 +5169,7 @@ export namespace Prisma {
     sID?: SortOrder
     name?: SortOrder
     password?: SortOrder
+    balance?: SortOrder
     address?: SortOrder
     dateOfBirth?: SortOrder
     email?: SortOrder
@@ -5095,6 +5181,7 @@ export namespace Prisma {
     sID?: SortOrder
     name?: SortOrder
     password?: SortOrder
+    balance?: SortOrder
     address?: SortOrder
     dateOfBirth?: SortOrder
     email?: SortOrder
@@ -5103,6 +5190,7 @@ export namespace Prisma {
 
   export type StudentSumOrderByAggregateInput = {
     id?: SortOrder
+    balance?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -5249,11 +5337,19 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type EnumPaymentAccountTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentAccountType | EnumPaymentAccountTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.PaymentAccountType[] | ListEnumPaymentAccountTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.PaymentAccountType[] | ListEnumPaymentAccountTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumPaymentAccountTypeNullableFilter<$PrismaModel> | $Enums.PaymentAccountType | null
+  }
+
   export type TransactionCountOrderByAggregateInput = {
     id?: SortOrder
     amount?: SortOrder
     createdAt?: SortOrder
     paymentUserId?: SortOrder
+    paymentAccountType?: SortOrder
     studentId?: SortOrder
   }
 
@@ -5261,7 +5357,6 @@ export namespace Prisma {
     id?: SortOrder
     amount?: SortOrder
     paymentUserId?: SortOrder
-    studentId?: SortOrder
   }
 
   export type TransactionMaxOrderByAggregateInput = {
@@ -5269,6 +5364,7 @@ export namespace Prisma {
     amount?: SortOrder
     createdAt?: SortOrder
     paymentUserId?: SortOrder
+    paymentAccountType?: SortOrder
     studentId?: SortOrder
   }
 
@@ -5277,6 +5373,7 @@ export namespace Prisma {
     amount?: SortOrder
     createdAt?: SortOrder
     paymentUserId?: SortOrder
+    paymentAccountType?: SortOrder
     studentId?: SortOrder
   }
 
@@ -5284,7 +5381,6 @@ export namespace Prisma {
     id?: SortOrder
     amount?: SortOrder
     paymentUserId?: SortOrder
-    studentId?: SortOrder
   }
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -5301,6 +5397,16 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type EnumPaymentAccountTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentAccountType | EnumPaymentAccountTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.PaymentAccountType[] | ListEnumPaymentAccountTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.PaymentAccountType[] | ListEnumPaymentAccountTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumPaymentAccountTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.PaymentAccountType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumPaymentAccountTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumPaymentAccountTypeNullableFilter<$PrismaModel>
   }
 
   export type TuitionCreateNestedManyWithoutStudentInput = {
@@ -5339,6 +5445,14 @@ export namespace Prisma {
     set?: string | null
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
   }
@@ -5369,14 +5483,6 @@ export namespace Prisma {
     update?: TransactionUpdateWithWhereUniqueWithoutStudentInput | TransactionUpdateWithWhereUniqueWithoutStudentInput[]
     updateMany?: TransactionUpdateManyWithWhereWithoutStudentInput | TransactionUpdateManyWithWhereWithoutStudentInput[]
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type TuitionUncheckedUpdateManyWithoutStudentNestedInput = {
@@ -5437,6 +5543,10 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type NullableEnumPaymentAccountTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PaymentAccountType | null
   }
 
   export type StudentUpdateOneRequiredWithoutTransactionsNestedInput = {
@@ -5608,6 +5718,13 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedEnumPaymentAccountTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentAccountType | EnumPaymentAccountTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.PaymentAccountType[] | ListEnumPaymentAccountTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.PaymentAccountType[] | ListEnumPaymentAccountTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumPaymentAccountTypeNullableFilter<$PrismaModel> | $Enums.PaymentAccountType | null
+  }
+
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -5624,9 +5741,19 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type NestedEnumPaymentAccountTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentAccountType | EnumPaymentAccountTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.PaymentAccountType[] | ListEnumPaymentAccountTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.PaymentAccountType[] | ListEnumPaymentAccountTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumPaymentAccountTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.PaymentAccountType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumPaymentAccountTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumPaymentAccountTypeNullableFilter<$PrismaModel>
+  }
+
   export type TuitionCreateWithoutStudentInput = {
     status?: string
-    fee: number
+    fee?: number
     startTime: Date | string
     endTime: Date | string
   }
@@ -5634,7 +5761,7 @@ export namespace Prisma {
   export type TuitionUncheckedCreateWithoutStudentInput = {
     id?: number
     status?: string
-    fee: number
+    fee?: number
     startTime: Date | string
     endTime: Date | string
   }
@@ -5653,6 +5780,7 @@ export namespace Prisma {
     amount: number
     createdAt?: Date | string
     paymentUserId: number
+    paymentAccountType?: $Enums.PaymentAccountType | null
   }
 
   export type TransactionUncheckedCreateWithoutStudentInput = {
@@ -5660,6 +5788,7 @@ export namespace Prisma {
     amount: number
     createdAt?: Date | string
     paymentUserId: number
+    paymentAccountType?: $Enums.PaymentAccountType | null
   }
 
   export type TransactionCreateOrConnectWithoutStudentInput = {
@@ -5724,13 +5853,15 @@ export namespace Prisma {
     amount?: FloatFilter<"Transaction"> | number
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
     paymentUserId?: IntFilter<"Transaction"> | number
-    studentId?: IntFilter<"Transaction"> | number
+    paymentAccountType?: EnumPaymentAccountTypeNullableFilter<"Transaction"> | $Enums.PaymentAccountType | null
+    studentId?: StringFilter<"Transaction"> | string
   }
 
   export type StudentCreateWithoutTuitionsInput = {
     sID: string
     name?: string | null
     password: string
+    balance?: number
     address?: string | null
     dateOfBirth?: Date | string | null
     email?: string | null
@@ -5743,6 +5874,7 @@ export namespace Prisma {
     sID: string
     name?: string | null
     password: string
+    balance?: number
     address?: string | null
     dateOfBirth?: Date | string | null
     email?: string | null
@@ -5770,6 +5902,7 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
     address?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5782,6 +5915,7 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
     address?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5793,6 +5927,7 @@ export namespace Prisma {
     sID: string
     name?: string | null
     password: string
+    balance?: number
     address?: string | null
     dateOfBirth?: Date | string | null
     email?: string | null
@@ -5805,6 +5940,7 @@ export namespace Prisma {
     sID: string
     name?: string | null
     password: string
+    balance?: number
     address?: string | null
     dateOfBirth?: Date | string | null
     email?: string | null
@@ -5832,6 +5968,7 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
     address?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5844,6 +5981,7 @@ export namespace Prisma {
     sID?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     password?: StringFieldUpdateOperationsInput | string
+    balance?: IntFieldUpdateOperationsInput | number
     address?: NullableStringFieldUpdateOperationsInput | string | null
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5854,7 +5992,7 @@ export namespace Prisma {
   export type TuitionCreateManyStudentInput = {
     id?: number
     status?: string
-    fee: number
+    fee?: number
     startTime: Date | string
     endTime: Date | string
   }
@@ -5864,6 +6002,7 @@ export namespace Prisma {
     amount: number
     createdAt?: Date | string
     paymentUserId: number
+    paymentAccountType?: $Enums.PaymentAccountType | null
   }
 
   export type TuitionUpdateWithoutStudentInput = {
@@ -5893,6 +6032,7 @@ export namespace Prisma {
     amount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentUserId?: IntFieldUpdateOperationsInput | number
+    paymentAccountType?: NullableEnumPaymentAccountTypeFieldUpdateOperationsInput | $Enums.PaymentAccountType | null
   }
 
   export type TransactionUncheckedUpdateWithoutStudentInput = {
@@ -5900,6 +6040,7 @@ export namespace Prisma {
     amount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentUserId?: IntFieldUpdateOperationsInput | number
+    paymentAccountType?: NullableEnumPaymentAccountTypeFieldUpdateOperationsInput | $Enums.PaymentAccountType | null
   }
 
   export type TransactionUncheckedUpdateManyWithoutStudentInput = {
@@ -5907,6 +6048,7 @@ export namespace Prisma {
     amount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     paymentUserId?: IntFieldUpdateOperationsInput | number
+    paymentAccountType?: NullableEnumPaymentAccountTypeFieldUpdateOperationsInput | $Enums.PaymentAccountType | null
   }
 
 

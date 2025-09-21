@@ -3,12 +3,39 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Post,
 } from '@nestjs/common';
 import { ApiTags, ApiProperty, ApiResponse } from '@nestjs/swagger';
 import { StudentService } from './student.service';
+import { PaymentAccountType } from 'prisma/generated/prisma';
 
 // ================= DTOs =================
+class PayTuitionDto {
+  @ApiProperty({ example: 1, description: 'ID của học phí (tuitionId)' })
+  tuitionId: number;
+
+  @ApiProperty({ example: 'STUDENT', description: 'Loại tài khoản thanh toán' })
+  payerType: string;
+
+  @ApiProperty({ example: 1, description: 'ID của người nộp tiền (studentId)' })
+  payerId: number;
+}
+
+class PayTuitionResponseDto {
+  @ApiProperty({ example: 'Payment successful' })
+  message: string;
+
+  @ApiProperty({ example: 5000000 })
+  newBalance: number;
+
+  @ApiProperty({ example: 'PAID' })
+  tuitionStatus: string;
+
+  @ApiProperty({ example: 123 })
+  transactionId: number;
+}
+
 class CreateStudentDto {
   @ApiProperty({ example: '12345', description: 'Student ID' })
   sID: string;
@@ -82,12 +109,16 @@ class LoginResponseDto {
 // =======================================
 
 @ApiTags('Students')
-@Controller('students')
+@Controller('')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Post('create')
-  @ApiResponse({ status: 200, description: 'Student created successfully', type: StudentResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Student created successfully',
+    type: StudentResponseDto,
+  })
   async createStudent(@Body() dto: CreateStudentDto) {
     return this.studentService.createStudent(
       dto.sID,
@@ -98,24 +129,50 @@ export class StudentController {
       dto.address,
       dto.dateOfBirth,
     );
-
   }
 
   @Get()
-  @ApiResponse({ status: 200, description: 'List of students', type: [StudentResponseDto] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of students',
+    type: [StudentResponseDto],
+  })
   async getStudents() {
     return this.studentService.getStudents();
   }
 
-  @Get(':sID')
-  @ApiResponse({ status: 200, description: 'Student found', type: StudentResponseDto })
-  async getStudentById(@Param('sID') sID: string) {
-    return this.studentService.getStudentById(sID);
+  @Get(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'Student found',
+    type: StudentResponseDto,
+  })
+  async getUserById(@Param('id', ParseIntPipe) id: number) {
+    return this.studentService.getStudentById(id);
   }
 
   @Post('login')
-  @ApiResponse({ status: 200, description: 'Login success', type: LoginResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Login success',
+    type: LoginResponseDto,
+  })
   async login(@Body() dto: LoginStudentDto) {
     return this.studentService.login(dto.sID, dto.password);
+  }
+
+  @Post(':sID/pay-tuition')
+  @ApiResponse({
+    status: 200,
+    description: 'Thanh toán học phí thành công',
+    type: PayTuitionResponseDto,
+  })
+  async payTuition(@Param('sID') sID: string, @Body() dto: PayTuitionDto) {
+    return this.studentService.payTuition(
+      sID,
+      dto.tuitionId,
+      dto.payerId,
+      dto.payerType as PaymentAccountType,
+    );
   }
 }

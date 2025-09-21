@@ -20,6 +20,8 @@ export class GatewayController {
       path = req.originalUrl.replace(/^\/student/, '');
     } else if (req.path.startsWith('/notification')) {
       target = process.env.NOTIFICATION_API_URL!;
+      // luôn xóa /notification khỏi URL
+      path = req.originalUrl.replace(/^\/notification/, '');
     } else {
       return res.status(404).json({ message: 'Service not found' });
     }

@@ -11,19 +11,29 @@ export class OtpService {
   ) {}
 
   async generateOtp(userId: string, email: string, transactionId?: string) {
-    const code = String(randomInt(100000, 999999)); // 6 số
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 phút
+    let code: string;
+    let existing: any;
 
-    // Lưu OTP vào DB
+    do {
+      code = String(randomInt(100000, 999999));
+      existing = await this.prisma.otp.findFirst({
+        where: {
+          userId,
+          code,
+          expiresAt: { gt: new Date() },
+        },
+      });
+    } while (existing);
+
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
     const otp = await this.prisma.otp.create({
       data: { code, userId, transactionId, expiresAt },
     });
 
-    // Nội dung email
     const subject = 'Your OTP Code';
     const body = `<p>Your OTP code is <b>${code}</b>. It will expire in 5 minutes.</p>`;
 
-    // Gửi OTP qua email
     await this.emailService.sendMail(email, subject, body, userId);
 
     return otp;
