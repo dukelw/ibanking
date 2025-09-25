@@ -11,10 +11,11 @@ import DisplayResult from "./components/DisplayResult";
 import { useDebounce } from "@/app/hooks/useDebounce";
 import { studentService } from "@/services/studentService";
 import { authService } from "@/services/authService";
+import { findCurrentTuition } from "@/helper";
+import { STEPS } from "@/constants";
 
 export default function TuitionPage() {
   const { user, setUser } = useAuthStore();
-  console.log(user);
   const [step, setStep] = useState(1);
 
   const [payer, setPayer] = useState({
@@ -37,26 +38,19 @@ export default function TuitionPage() {
     agreedTerms: false,
   });
   const [otp, setOtp] = useState("");
-  const [history, setHistory] = useState([
-    { date: "2025-09-01", description: "Thanh toán học phí MSSV 12345" },
-    { date: "2025-08-01", description: "Thanh toán học phí MSSV 67890" },
-  ]);
 
   useEffect(() => {
     if (!debouncedStudentId) return;
+
     const fetchTuition = async () => {
       try {
         const data = await tuitionService.getStudentTuition(
           debouncedStudentId,
           "PENDING"
         );
+
         if (Array.isArray(data)) {
-          const now = new Date();
-          const currentTuition = data.find((item) => {
-            const start = new Date(item.startTime);
-            const end = new Date(item.endTime);
-            return now >= start && now <= end;
-          });
+          const currentTuition = findCurrentTuition(data);
           if (currentTuition) {
             setStudentInfo({
               studentId: currentTuition.sID,
@@ -76,6 +70,7 @@ export default function TuitionPage() {
         console.error("Failed to fetch tuition:", err);
       }
     };
+
     fetchTuition();
   }, [debouncedStudentId]);
 
@@ -114,17 +109,25 @@ export default function TuitionPage() {
   };
 
   useEffect(() => {
-    if (user) {
-      setPayer({
-        fullName: user.name || "",
-        phone: user.phone || user.phoneNumber || "",
-        email: user.email || "",
-        balance: user.balance,
-      });
-    }
-  }, [user]);
+    if (!user) return;
 
-  const steps = ["Xác nhận thông tin", "Nhập OTP", "Kết quả"];
+    const fetchUser = async () => {
+      const res = user.sID
+        ? await studentService.getStudent(user.id)
+        : await authService.getUser(user.id);
+
+      if (res) {
+        setPayer({
+          fullName: res.name ?? "",
+          phone: res.phone || res.phoneNumber || "",
+          email: res.email || "",
+          balance: res.balance,
+        });
+      }
+    };
+
+    fetchUser();
+  }, [user]);
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-8">
@@ -132,7 +135,7 @@ export default function TuitionPage() {
 
       {/* Thanh trạng thái */}
       <div className="flex items-center justify-center space-x-2">
-        {steps.map((label, index) => {
+        {STEPS.map((label, index) => {
           const stepNumber = index + 1;
           const isActive = step === stepNumber;
           const isCompleted = step > stepNumber;
@@ -152,7 +155,7 @@ export default function TuitionPage() {
                 {stepNumber}
               </div>
               <span className="ml-2 text-sm font-medium">{label}</span>
-              {index < steps.length - 1 && (
+              {index < STEPS.length - 1 && (
                 <div className="w-10 h-[2px] bg-gray-300 mr-2 ml-4" />
               )}
             </div>
@@ -177,7 +180,7 @@ export default function TuitionPage() {
         <InputOtp otp={otp} setOtp={setOtp} onConfirm={handleConfirmOtp} />
       )}
 
-      {step === 3 && <DisplayResult history={history} />}
+      {step === 3 && <DisplayResult history={[]} />}
     </div>
   );
 }
