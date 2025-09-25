@@ -49,7 +49,7 @@ export default function TuitionPage() {
           "PENDING"
         );
 
-        if (Array.isArray(data)) {
+        if (Array.isArray(data) && data.length > 0) {
           const currentTuition = findCurrentTuition(data);
           if (currentTuition) {
             setStudentInfo({
@@ -65,6 +65,21 @@ export default function TuitionPage() {
               id: currentTuition.id,
             }));
           }
+        } else {
+          console.log("Unexpected response format:", data);
+          setStudentInfo({
+              studentId: "",
+              studentName: "",
+              tuitionAmount: 0,
+              startTime: "",
+              endTime: "",
+            });
+            setPayment((prev) => ({
+              ...prev,
+              amountToPay: 0,
+              id: 0,
+              agreedTerms: false,
+            }));
         }
       } catch (err) {
         console.error("Failed to fetch tuition:", err);
