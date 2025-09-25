@@ -23,8 +23,18 @@ export class AuthService {
   }
 
   async getUsers() {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        phone: true,
+        balance: true,
+        createdAt: true,
+      },
+    });
   }
+
 
   async login(email: string, password: string) {
     const user = await this.prisma.user.findUnique({
