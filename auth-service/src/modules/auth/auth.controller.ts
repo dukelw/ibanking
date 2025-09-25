@@ -78,12 +78,12 @@ export class AuthController {
       required: ['email', 'password'],
     },
   })
-
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'User logged in successfully',
     schema: {
       example: {
+        message: 'Login successful',
         user: {
           id: 11,
           email: 'student@example.com',
@@ -92,11 +92,17 @@ export class AuthController {
           balance: 1000.5,
           createdAt: '2025-09-19T13:55:55.006Z',
         },
-        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...', // JWT token mẫu
       },
     },
   })
-
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error',
+  })
   async login(
     @Body('email') email: string,
     @Body('password') password: string,
@@ -141,6 +147,10 @@ export class AuthController {
         },
       ],
     },
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Failed to retrieve users',
   })
   async findAll() {
     return this.authService.getUsers();

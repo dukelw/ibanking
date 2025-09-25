@@ -10,25 +10,25 @@ import { EmailService } from './email.service';
 
 class SendEmailDto {
   @ApiProperty({
-    description: 'Người nhận email',
+    description: 'Recipient email address',
     example: 'user@example.com',
   })
   to: string;
 
   @ApiProperty({
-    description: 'Tiêu đề email',
+    description: 'Email subject',
     example: 'Welcome to our service',
   })
   subject: string;
 
   @ApiProperty({
-    description: 'Nội dung email (HTML hoặc plain text)',
+    description: 'Email content (HTML or plain text)',
     example: '<p>Hello, your account has been created!</p>',
   })
   body: string;
 
   @ApiProperty({
-    description: 'ID người gửi trong hệ thống (tùy chọn)',
+    description: 'Sender ID in the system (optional)',
     example: 'user_12345',
     required: false,
   })
@@ -45,7 +45,7 @@ export class EmailController {
   @ApiBody({ type: SendEmailDto })
   @ApiResponse({
     status: 201,
-    description: 'Email queued/sent successfully',
+    description: 'Email queued or sent successfully',
     schema: {
       type: 'object',
       properties: {
@@ -70,7 +70,7 @@ export class EmailController {
   })
   @ApiResponse({
     status: 500,
-    description: 'Failed to send email',
+    description: 'Fail to queue/send email',
   })
   async send(@Body() dto: SendEmailDto) {
     return this.emailService.sendMail(

@@ -13,27 +13,27 @@ export class StudentResponseDto {
   @ApiProperty({ example: 1 })
   id: number;
 
-  @ApiProperty({ example: '52200195' })
+  @ApiProperty({ example: 'student_12345' })
   sID: string;
 
-  @ApiProperty({ example: 'Nguyen Quang Vinh' })
+  @ApiProperty({ example: 'Student' })
   name: string;
 
-  @ApiProperty({ example: 'abc@gmail.com' })
+  @ApiProperty({ example: 'student@example.com' })
   email: string;
 
   @ApiProperty({ example: '0123456789' })
   phoneNumber: string;
 
-  @ApiProperty({ example: 'Hanoi' })
+  @ApiProperty({ example: 'City' })
   address: string;
 
-  @ApiProperty({ example: '2022-01-22T00:00:00.000Z' })
+  @ApiProperty({ example: '2000-01-01T00:00:00.000Z' })
   dateOfBirth: Date;
 }
 
 class CreateTuitionDto {
-  @ApiProperty({ description: 'Student ID', example: 'SV001' })
+  @ApiProperty({ description: 'Student ID', example: 'student_12345' })
   sID: string;
 
   @ApiProperty({ description: 'Tuition fee', example: 5000000 })
@@ -77,11 +77,12 @@ class UpdateTuitionDto {
   })
   fee?: number;
 }
+
 export class TuitionWithStudentResponseDto {
   @ApiProperty({ example: 2 })
   id: number;
 
-  @ApiProperty({ example: '52200195' })
+  @ApiProperty({ example: 'student_12345' })
   sID: string;
 
   @ApiProperty({ example: 'PENDING' })
@@ -99,6 +100,7 @@ export class TuitionWithStudentResponseDto {
   @ApiProperty({ type: () => StudentResponseDto })
   student: StudentResponseDto;
 }
+
 // =============== Controller ===============
 @Controller('tuition')
 @ApiTags('Tuition')

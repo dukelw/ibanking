@@ -1,97 +1,83 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { OtpService } from './otp.service';
-import { ApiTags, ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiProperty } from '@nestjs/swagger';
 
-@ApiTags('OTP') // nhóm OTP trong Swagger
+// ================= DTOs =================
+class GenerateOtpDto {
+  @ApiProperty({ description: 'User ID', example: 'user_12345' })
+  userId: string;
+
+  @ApiProperty({ description: 'Recipient email address', example: 'student@example.com' })
+  email: string;
+
+  @ApiProperty({ description: 'Associated transaction ID (optional)', example: 'txn-456', required: false })
+  transactionId?: string;
+}
+
+class OtpResponseDto {
+  @ApiProperty({ description: 'OTP record ID', example: '76f3f4ca-73b1-4113-9e3f-76dc33d26f7a' })
+  id: string;
+
+  @ApiProperty({ description: 'Generated OTP code', example: '981410' })
+  code: string;
+
+  @ApiProperty({ description: 'User ID', example: 'user_12345' })
+  userId: string;
+
+  @ApiProperty({ description: 'Associated transaction ID', example: 'txn-456', required: false })
+  transactionId?: string;
+
+  @ApiProperty({ description: 'Expiration timestamp of the OTP', example: '2025-09-19T14:15:56.312Z' })
+  expiresAt: string;
+
+  @ApiProperty({ description: 'Whether the OTP has been used', example: false })
+  used: boolean;
+
+  @ApiProperty({ description: 'Creation timestamp of the OTP record', example: '2025-09-19T14:10:56.315Z' })
+  createdAt: string;
+}
+
+class VerifyOtpDto {
+  @ApiProperty({ description: 'User ID', example: 'user_12345' })
+  userId: string;
+
+  @ApiProperty({ description: 'OTP code to verify', example: '123456' })
+  code: string;
+}
+
+class VerifyOtpResponseDto {
+  @ApiProperty({ description: 'Whether the OTP is valid', example: true })
+  valid: boolean;
+}
+
+// =======================================
+
+@ApiTags('OTP')
 @Controller('otp')
 export class OtpController {
   constructor(private otpService: OtpService) {}
 
   @Post('generate')
-  @ApiOperation({
-    summary: 'Generate OTP',
-    description: 'Tạo OTP mới và gửi qua email cho user',
-  })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        userId: { type: 'string', example: 'user_12345' },
-        email: { type: 'string', example: 'student@example.com' },
-        transactionId: { type: 'string', nullable: true, example: 'txn-456' },
-      },
-      required: ['userId', 'email'],
-    },
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'OTP generated and sent to email',
-    schema: {
-      type: 'object',
-      properties: {
-        id: { type: 'string', example: '76f3f4ca-73b1-4113-9e3f-76dc33d26f7a' },
-        code: { type: 'string', example: '981410' },
-        userId: { type: 'string', example: 'user_12345' },
-        transactionId: { type: 'string', example: 'txn-456' },
-        expiresAt: { type: 'string', example: '2025-09-19T14:15:56.312Z' },
-        used: { type: 'boolean', example: false },
-        createdAt: { type: 'string', example: '2025-09-19T14:10:56.315Z' },
-      },
-      example: {
-        id: '76f3f4ca-73b1-4113-9e3f-76dc33d26f7a',
-        code: '981410',
-        userId: 'user_12345',
-        transactionId: 'txn-456',
-        expiresAt: '2025-09-19T14:15:56.312Z',
-        used: false,
-        createdAt: '2025-09-19T14:10:56.315Z',
-      },
-    },
-  })
-  async generate(
-    @Body() dto: { userId: string; email: string; transactionId?: string },
-  ) {
-    return this.otpService.generateOtp(
-      dto.userId,
-      dto.email,
-      dto.transactionId,
-    );
+  @ApiOperation({ summary: 'Generate OTP', description: 'Generate a new OTP and send it via email to the user' })
+  @ApiBody({ type: GenerateOtpDto })
+  @ApiResponse({ status: 201, description: 'OTP generated and sent successfully', type: OtpResponseDto })
+  @ApiResponse({ status: 500, description: 'Failed to generate/send OTP' })
+  async generate(@Body() dto: GenerateOtpDto) {
+    return this.otpService.generateOtp(dto.userId, dto.email, dto.transactionId);
   }
 
   @Post('verify')
-  @ApiOperation({
-    summary: 'Verify OTP',
-    description: 'Xác thực OTP người dùng nhập',
-  })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        userId: { type: 'string', example: 'user_12345' },
-        code: { type: 'string', example: '123456' },
-      },
-      required: ['userId', 'code'],
-    },
-  })
+  @ApiOperation({ summary: 'Verify OTP', description: 'Verify the OTP code entered by the user' })
+  @ApiBody({ type: VerifyOtpDto })
+  @ApiResponse({ status: 200, description: 'OTP verification result', type: VerifyOtpResponseDto })
   @ApiResponse({
-    status: 200,
-    description: 'OTP verification result (true/false)',
+    status: 201,
+    description: 'Invalid OTP or verification failed',
     schema: {
-      type: 'object',
-      properties: {
-        valid: { type: 'boolean', example: true },
-      },
-      examples: {
-        success: {
-          value: { valid: true },
-        },
-        failure: {
-          value: { valid: false },
-        },
-      },
+      example: { valid: false },
     },
   })
-  async verify(@Body() dto: { userId: string; code: string }) {
+  async verify(@Body() dto: VerifyOtpDto) {
     const isValid = await this.otpService.verifyOtp(dto.userId, dto.code);
     return { valid: isValid };
   }
