@@ -180,7 +180,7 @@ export default function TuitionPage() {
         <InputOtp otp={otp} setOtp={setOtp} onConfirm={handleConfirmOtp} />
       )}
 
-      {step === 3 && <DisplayResult history={[]} />}
+      {step === 3 && <DisplayResult />}
     </div>
   );
 }

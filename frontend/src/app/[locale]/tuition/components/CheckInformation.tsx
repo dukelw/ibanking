@@ -156,7 +156,11 @@ export default function CheckInformation({
         <button
           type="submit"
           className="w-full p-2 bg-[#00713D] text-white rounded disabled:opacity-50"
-          disabled={!payment.agreedTerms || !studentInfo.studentId}
+          disabled={
+            (!payment.agreedTerms || !studentInfo.studentId) &&
+            studentInfo.tuitionAmount &&
+            studentInfo.tuitionAmount < payer.balance
+          }
         >
           Xác nhận giao dịch
         </button>
