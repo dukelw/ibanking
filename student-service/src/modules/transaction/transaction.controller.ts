@@ -1,24 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiParam, ApiOperation } from '@nestjs/swagger';
 import { TransactionService } from './transaction.service';
-
-// ================= DTOs cho Swagger =================
-class StudentInfoDto {
-  id: number;
-  sID: string;
-  name: string;
-}
-
-class TransactionResponseDto {
-  id: number;
-  amount: number;
-  createdAt: Date;
-  paymentUserId: number;
-  paymentAccountType: string;
-  student: StudentInfoDto;
-}
-
-// ====================================================
+import { TransactionResponseDto } from './dto';
 
 @ApiTags('Transactions')
 @Controller('transactions')
@@ -26,17 +9,26 @@ export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @Get('all')
+  @ApiOperation({
+    summary: 'Get all transactions',
+    description:
+      'Retrieve a list of all transactions, including related student info.',
+  })
   @ApiResponse({
     status: 200,
     description: 'List of all transactions',
     type: [TransactionResponseDto],
   })
   async getAllTransactions() {
-    console.log('Hello');
     return this.transactionService.getTransactions();
   }
 
   @Get(':id')
+  @ApiOperation({
+    summary: 'Get transaction details',
+    description:
+      'Retrieve details of a specific transaction by its transaction ID.',
+  })
   @ApiParam({ name: 'id', type: Number, description: 'Transaction ID' })
   @ApiResponse({
     status: 200,
@@ -49,7 +41,16 @@ export class TransactionController {
   }
 
   @Get('user/:payerType/:id')
-  @ApiParam({ name: 'payerType', type: String, description: 'Payer type' })
+  @ApiOperation({
+    summary: 'Get transactions of a user',
+    description:
+      'Retrieve all transactions made by a specific user, based on payer type and user ID.',
+  })
+  @ApiParam({
+    name: 'payerType',
+    type: String,
+    description: 'Payer type (e.g., STUDENT, STAFF)',
+  })
   @ApiParam({ name: 'id', type: Number, description: 'User ID' })
   @ApiResponse({
     status: 200,
