@@ -105,6 +105,7 @@ export class StudentController {
   })
   async payTuition(@Param('sID') sID: string, @Body() dto: PayTuitionDto) {
     return this.studentService.payTuition(
+      dto.payerEmail,
       sID,
       dto.tuitionId,
       dto.payerId,

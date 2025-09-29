@@ -7,12 +7,15 @@ import {
 import * as bcrypt from 'bcrypt';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { InjectQueue } from '@nestjs/bull';
+import type { Queue } from 'bull';
 
 @Injectable()
 export class StudentService {
   constructor(
     private prisma: PrismaService,
     private httpService: HttpService,
+    @InjectQueue('notification') private notificationQueue: Queue, // queue gửi mail
   ) {}
 
   async createStudent(
@@ -115,6 +118,7 @@ export class StudentService {
   }
 
   async payTuition(
+    payerEmail: string,
     studentId: string,
     tuitionId: number,
     payerId: number,
@@ -123,9 +127,8 @@ export class StudentService {
     return this.prisma.$transaction(async (tx) => {
       const tuition = await tx.tuition.findUnique({ where: { id: tuitionId } });
       if (!tuition) throw new NotFoundException('Tuition not found');
-      if (tuition.status === 'PAYED') throw new Error('Already paid');
+      if (tuition.status === 'PAID') throw new Error('Already paid');
 
-      console.log(studentId);
       const student = await tx.student.findUnique({
         where: { sID: studentId },
       });
@@ -136,33 +139,28 @@ export class StudentService {
         if (!payer) throw new NotFoundException('Payer student not found');
         if (payer.balance < tuition.fee) throw new Error('Not enough balance');
 
-        console.log(payerId, payer);
-        await tx.student.update({
-          where: { id: payerId },
+        const res = await tx.student.updateMany({
+          where: { id: payerId, balance: { gte: tuition.fee } },
           data: { balance: { decrement: tuition.fee } },
         });
+        if (res.count === 0) throw new Error('Not enough balance');
       } else if (payerType === 'OTHER') {
-        // gọi sang auth-service để trừ tiền
-        try {
-          await firstValueFrom(
-            this.httpService.post(
-              `${process.env.AUTH_SERVICE}/auth/${payerId}/deduct-balance`,
-              { amount: tuition.fee },
-            ),
-          );
-        } catch (err) {
-          throw new Error(
-            `Auth service error: ${err.response?.data?.message || err.message}`,
-          );
-        }
+        await firstValueFrom(
+          this.httpService.post(
+            `${process.env.AUTH_SERVICE}/auth/${payerId}/deduct-balance`,
+            { amount: tuition.fee },
+          ),
+        );
       }
 
-      const updatedTuition = await tx.tuition.update({
-        where: { id: tuitionId },
+      const updatedTuition = await tx.tuition.updateMany({
+        where: { id: tuitionId, status: 'PENDING' },
         data: { status: 'PAID' },
       });
 
-      await tx.transaction.create({
+      if (updatedTuition.count === 0) throw new Error('Already paid');
+
+      const transaction = await tx.transaction.create({
         data: {
           amount: tuition.fee,
           paymentUserId: payerId,
@@ -171,10 +169,35 @@ export class StudentService {
         },
       });
 
+      if (payerEmail !== student.email) {
+        // 🚀 Publish job vào queue sau khi tạo transaction
+        await this.notificationQueue.add('sendPaymentEmail', {
+          to: student.email, // hoặc email payer
+          subject: 'Xác nhận thanh toán học phí thành công',
+          body: `
+          <h3>Xác nhận thanh toán học phí</h3>
+          <p>Sinh viên: ${student.name} (${student.sID})</p>
+          <p>Số tiền: ${tuition.fee.toLocaleString()} VND</p>
+          <p>Thời gian: ${new Date().toLocaleString()}</p>
+        `,
+        });
+      }
+
+      // 🚀 Publish job vào queue sau khi tạo transaction
+      await this.notificationQueue.add('sendPaymentEmail', {
+        to: payerEmail, // hoặc email payer
+        subject: 'Xác nhận thanh toán học phí thành công',
+        body: `
+          <h3>Xác nhận thanh toán học phí</h3>
+          <p>Sinh viên: ${student.name} (${student.sID})</p>
+          <p>Số tiền: ${tuition.fee.toLocaleString()} VND</p>
+          <p>Thời gian: ${new Date().toLocaleString()}</p>
+        `,
+      });
+
       return {
         message: 'Payment success',
-        tuitionId: updatedTuition.id,
-        tuitionStatus: updatedTuition.status,
+        transactionId: transaction.id,
       };
     });
   }

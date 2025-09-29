@@ -37,9 +37,14 @@ export class AuthController {
     status: 500,
     description: 'User failed to be created',
   })
-  async register(@Body() createUserDto: CreateUserDto) {
-    const { email, password, name } = createUserDto;
-    return this.authService.createUser(email, password, name);
+  async register(
+    @Body('email') email: string,
+    @Body('password') password: string,
+    @Body('name') name?: string,
+    @Body('phone') phone?: string,
+    @Body('balance') balance?: number,
+  ) {
+    return this.authService.createUser(email, password, name, phone, balance);
   }
 
   @Post('login')

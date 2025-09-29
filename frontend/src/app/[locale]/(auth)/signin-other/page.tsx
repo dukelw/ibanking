@@ -56,7 +56,7 @@ export default function SignIn() {
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           {/* Email */}
           <div>
-            <Label htmlFor="email" />
+            <Label htmlFor="email">Email</Label>
             <TextInput
               id="email"
               type="email"
@@ -71,7 +71,7 @@ export default function SignIn() {
 
           {/* Password */}
           <div>
-            <Label htmlFor="password" />
+            <Label htmlFor="password">Password</Label>
             <div className="relative">
               <TextInput
                 id="password"

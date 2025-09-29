@@ -22,6 +22,7 @@ export const studentService = {
   },
 
   async payTuition(
+    payerEmail: string,
     studentId: string,
     tuitionId: number,
     payerId: number,
@@ -31,6 +32,7 @@ export const studentService = {
       const response: AxiosResponse = await axios.post(
         `${API_URL}/${studentId}/pay-tuition`,
         {
+          payerEmail,
           sID: studentId,
           tuitionId,
           payerId,
