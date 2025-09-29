@@ -11,12 +11,20 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class AuthService {
   constructor(private prisma: PrismaService) {}
 
-  async createUser(email: string, password: string, name?: string) {
+  async createUser(
+    email: string,
+    password: string,
+    name?: string,
+    phone?: string,
+    balance?: number,
+  ) {
     const hashedPassword = await bcrypt.hash(password, 10);
     return this.prisma.user.create({
       data: {
         email,
         name,
+        phone,
+        balance,
         password: hashedPassword,
       },
     });
@@ -34,7 +42,6 @@ export class AuthService {
       },
     });
   }
-
 
   async login(email: string, password: string) {
     const user = await this.prisma.user.findUnique({
@@ -65,7 +72,7 @@ export class AuthService {
       throw new BadRequestException('Not enough balance');
 
     const updatedUser = await this.prisma.user.update({
-      where: { id },
+      where: { id, balance: { gte: amount } },
       data: { balance: { decrement: amount } },
     });
 

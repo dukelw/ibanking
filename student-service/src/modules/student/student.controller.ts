@@ -18,6 +18,12 @@ class PayTuitionDto {
   @ApiProperty({ example: 'STUDENT', description: 'Loại tài khoản thanh toán' })
   payerType: string;
 
+  @ApiProperty({
+    example: 'example@example.com',
+    description: 'Email của người nộp tiền',
+  })
+  payerEmail: string;
+
   @ApiProperty({ example: 1, description: 'ID của người nộp tiền (studentId)' })
   payerId: number;
 }
@@ -169,6 +175,7 @@ export class StudentController {
   })
   async payTuition(@Param('sID') sID: string, @Body() dto: PayTuitionDto) {
     return this.studentService.payTuition(
+      dto.payerEmail,
       sID,
       dto.tuitionId,
       dto.payerId,

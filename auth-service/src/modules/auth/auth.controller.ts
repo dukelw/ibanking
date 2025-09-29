@@ -70,8 +70,10 @@ export class AuthController {
     @Body('email') email: string,
     @Body('password') password: string,
     @Body('name') name?: string,
+    @Body('phone') phone?: string,
+    @Body('balance') balance?: number,
   ) {
-    return this.authService.createUser(email, password, name);
+    return this.authService.createUser(email, password, name, phone, balance);
   }
 
   @Post('login')

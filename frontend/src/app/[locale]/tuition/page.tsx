@@ -66,20 +66,19 @@ export default function TuitionPage() {
             }));
           }
         } else {
-          console.log("Unexpected response format:", data);
           setStudentInfo({
-              studentId: "",
-              studentName: "",
-              tuitionAmount: 0,
-              startTime: "",
-              endTime: "",
-            });
-            setPayment((prev) => ({
-              ...prev,
-              amountToPay: 0,
-              id: 0,
-              agreedTerms: false,
-            }));
+            studentId: "",
+            studentName: "",
+            tuitionAmount: 0,
+            startTime: "",
+            endTime: "",
+          });
+          setPayment((prev) => ({
+            ...prev,
+            amountToPay: 0,
+            id: 0,
+            agreedTerms: false,
+          }));
         }
       } catch (err) {
         console.error("Failed to fetch tuition:", err);
@@ -102,6 +101,7 @@ export default function TuitionPage() {
     const res = await otpService.verifyOtp(user.id.toString(), otp);
     if (res) {
       const res = await studentService.payTuition(
+        user.email,
         studentInfo.studentId,
         payment.id,
         user.id,
@@ -122,6 +122,32 @@ export default function TuitionPage() {
       }
     }
   };
+
+  // ngay dưới các useEffect khác
+  useEffect(() => {
+    if (step === 3) {
+      toast.info("Quay về trang thanh toán trong 3 giây...");
+      const timer = setTimeout(() => {
+        // reset lại thông tin nếu cần
+        setStep(1);
+        setStudentInfo({
+          studentId: "",
+          studentName: "",
+          tuitionAmount: 0,
+          startTime: "",
+          endTime: "",
+        });
+        setPayment({
+          id: 0,
+          amountToPay: 0,
+          agreedTerms: false,
+        });
+        setOtp("");
+      }, 3000);
+
+      return () => clearTimeout(timer); // cleanup khi component unmount
+    }
+  }, [step]);
 
   useEffect(() => {
     if (!user) return;
