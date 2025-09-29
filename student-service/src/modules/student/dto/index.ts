@@ -8,6 +8,9 @@ export class PayTuitionDto {
   @ApiProperty({ example: 'STUDENT', description: 'Payer account type' })
   payerType: string;
 
+  @ApiProperty({ example: 'student@example.com', description: 'Payer email' })
+  payerEmail: string;
+
   @ApiProperty({ example: 202, description: 'Payer ID (e.g., student ID)' })
   payerId: number;
 }

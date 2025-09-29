@@ -15,7 +15,15 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 
-import { CreateUserDto, LoginDto, DeductBalanceDto, UserResponseDto, LoginResponseDto, UserIDResponseDto, BalanceDeductResponseDto } from './dto';
+import {
+  CreateUserDto,
+  LoginDto,
+  DeductBalanceDto,
+  UserResponseDto,
+  LoginResponseDto,
+  UserIDResponseDto,
+  BalanceDeductResponseDto,
+} from './dto';
 
 @ApiTags('AUTH')
 @Controller('auth')
