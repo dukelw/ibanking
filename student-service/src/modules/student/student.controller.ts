@@ -6,122 +6,31 @@ import {
   ParseIntPipe,
   Post,
 } from '@nestjs/common';
-import { ApiTags, ApiProperty, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { StudentService } from './student.service';
+import {
+  CreateStudentDto,
+  LoginStudentDto,
+  PayTuitionDto,
+  PayTuitionResponseDto,
+  StudentResponseDto,
+  LoginResponseDto,
+} from './dto';
 import { PaymentAccountType } from 'prisma/generated/prisma';
 
-// ================= DTOs =================
-class PayTuitionDto {
-  @ApiProperty({ example: 1, description: 'ID của học phí (tuitionId)' })
-  tuitionId: number;
-
-  @ApiProperty({ example: 'STUDENT', description: 'Loại tài khoản thanh toán' })
-  payerType: string;
-
-  @ApiProperty({
-    example: 'example@example.com',
-    description: 'Email của người nộp tiền',
-  })
-  payerEmail: string;
-
-  @ApiProperty({ example: 1, description: 'ID của người nộp tiền (studentId)' })
-  payerId: number;
-}
-
-class PayTuitionResponseDto {
-  @ApiProperty({ example: 'Payment successful' })
-  message: string;
-
-  @ApiProperty({ example: 5000000 })
-  newBalance: number;
-
-  @ApiProperty({ example: 'PAID' })
-  tuitionStatus: string;
-
-  @ApiProperty({ example: 123 })
-  transactionId: number;
-}
-
-class CreateStudentDto {
-  @ApiProperty({ example: '12345', description: 'Student ID' })
-  sID: string;
-
-  @ApiProperty({ example: '123456', description: 'Password' })
-  password: string;
-
-  @ApiProperty({ example: 'Nguyen Van A', description: 'Full name' })
-  name: string;
-
-  @ApiProperty({ example: 'abc@gmail.com', required: false })
-  email?: string;
-
-  @ApiProperty({ example: '0123456789', required: false })
-  phoneNumber?: string;
-
-  @ApiProperty({ example: 'Hanoi', required: false })
-  address?: string;
-
-  @ApiProperty({
-    example: '2025-01-01',
-    required: false,
-    description: 'Date of birth in ISO 8601 format',
-  })
-  dateOfBirth?: string;
-}
-
-class LoginStudentDto {
-  @ApiProperty({ example: '52200195' })
-  sID: string;
-
-  @ApiProperty({ example: '123456' })
-  password: string;
-}
-// =======================================
-// ========== Response DTO ==========
-class StudentResponseDto {
-  @ApiProperty({ example: 1 })
-  id: number;
-
-  @ApiProperty({ example: '12345' })
-  sID: string;
-
-  @ApiProperty({ example: 'Nguyen Van A' })
-  name: string;
-
-  @ApiProperty({ example: 'abc@gmail.com', required: false })
-  email?: string;
-
-  @ApiProperty({ example: '0123456789', required: false })
-  phoneNumber?: string;
-
-  @ApiProperty({ example: 'Hanoi', required: false })
-  address?: string;
-
-  @ApiProperty({
-    example: '2002-10-10T00:00:00.000Z',
-    required: false,
-    description: 'Date of birth (ISO 8601)',
-  })
-  dateOfBirth?: Date;
-}
-class LoginResponseDto {
-  @ApiProperty({ example: 'Login successful' })
-  message: string;
-
-  @ApiProperty({ type: () => StudentResponseDto })
-  student: StudentResponseDto;
-}
-
-// =======================================
-
 @ApiTags('Students')
-@Controller('')
+@Controller('students')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Post('create')
+  @ApiOperation({
+    summary: 'Create student',
+    description:
+      'Register a new student with basic information such as ID, password, name, and optional details.',
+  })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Student created successfully',
     type: StudentResponseDto,
   })
@@ -138,6 +47,10 @@ export class StudentController {
   }
 
   @Get()
+  @ApiOperation({
+    summary: 'Get all students',
+    description: 'Retrieve a list of all registered students.',
+  })
   @ApiResponse({
     status: 200,
     description: 'List of students',
@@ -148,19 +61,27 @@ export class StudentController {
   }
 
   @Get(':id')
+  @ApiOperation({
+    summary: 'Get student by ID',
+    description: 'Fetch details of a specific student using their ID.',
+  })
   @ApiResponse({
     status: 200,
     description: 'Student found',
     type: StudentResponseDto,
   })
-  async getUserById(@Param('id', ParseIntPipe) id: number) {
+  async getStudentById(@Param('id', ParseIntPipe) id: number) {
     return this.studentService.getStudentById(id);
   }
 
   @Post('login')
+  @ApiOperation({
+    summary: 'Student login',
+    description: 'Authenticate a student using their Student ID and password.',
+  })
   @ApiResponse({
-    status: 200,
-    description: 'Login success',
+    status: 201,
+    description: 'Login successful',
     type: LoginResponseDto,
   })
   async login(@Body() dto: LoginStudentDto) {
@@ -168,10 +89,19 @@ export class StudentController {
   }
 
   @Post(':sID/pay-tuition')
+  @ApiOperation({
+    summary: 'Pay tuition',
+    description:
+      'Process tuition fee payment for a student. Requires tuition ID, payer ID, and account type.',
+  })
   @ApiResponse({
     status: 200,
-    description: 'Thanh toán học phí thành công',
+    description: 'Tuition paid successfully',
     type: PayTuitionResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Tuition or student not found',
   })
   async payTuition(@Param('sID') sID: string, @Body() dto: PayTuitionDto) {
     return this.studentService.payTuition(
