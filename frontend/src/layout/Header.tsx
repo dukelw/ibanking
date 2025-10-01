@@ -25,7 +25,11 @@ export default function Header() {
     await authService.logout();
     setUser(null);
     setTokens(null);
-    router.push("/signin-student");
+    if (user.sID) {
+      router.push("/signin-student");
+    } else {
+      router.push("/signin-other");
+    }
   };
 
   // click ngoài thì đóng menu
@@ -100,7 +104,6 @@ export default function Header() {
                   className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
                   onClick={() => setOpenMenu(false)}
                 >
-                  <LogIn className="w-4 h-4" />
                   Đăng nhập sinh viên
                 </Link>
                 <Link
@@ -108,7 +111,6 @@ export default function Header() {
                   className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
                   onClick={() => setOpenMenu(false)}
                 >
-                  <LogIn className="w-4 h-4" />
                   Đăng nhập khác
                 </Link>
               </>

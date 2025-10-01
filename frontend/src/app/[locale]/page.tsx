@@ -7,6 +7,7 @@ import { School } from "lucide-react";
 import Header from "@/layout/Header";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function TuitionHomePage() {
   const { user } = useAuthStore();
@@ -96,7 +97,18 @@ export default function TuitionHomePage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
             >
-              Vui lòng đăng nhập để tiếp tục
+              Vui lòng
+              <Link
+                className="mx-1 text-blue-500 font-semibold"
+                href="/signin-student"
+              >
+                đăng nhập sinh viên
+              </Link>
+              hoặc
+              <Link className="mx-1 text-pink-500 font-semibold" href="/signin-other">
+                đăng nhập khác
+              </Link>
+              để tiếp tục
             </motion.p>
           </>
         )}
