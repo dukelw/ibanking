@@ -157,10 +157,10 @@ export default function CheckInformation({
           type="submit"
           className="w-full p-2 bg-[#00713D] text-white rounded disabled:opacity-50"
           disabled={
-            !payment.agreedTerms ||                // chưa đồng ý điều khoản
-            !studentInfo.studentId ||              // chưa nhập MSSV
-            !studentInfo.tuitionAmount ||          // chưa có học phí
-            studentInfo.tuitionAmount <= 0 ||      // học phí không hợp lệ
+            !payment.agreedTerms || // chưa đồng ý điều khoản
+            !studentInfo.studentId || // chưa nhập MSSV
+            !studentInfo.tuitionAmount || // chưa có học phí
+            studentInfo.tuitionAmount <= 0 || // học phí không hợp lệ
             payer.balance < studentInfo.tuitionAmount
           }
         >

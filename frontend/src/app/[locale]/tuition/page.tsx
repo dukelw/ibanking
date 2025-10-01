@@ -8,12 +8,12 @@ import { toast } from "react-toastify";
 import CheckInformation from "./components/CheckInformation";
 import InputOtp from "./components/InputOtp";
 import DisplayResult from "./components/DisplayResult";
-import { useDebounce } from "@/app/hooks/useDebounce";
 import { studentService } from "@/services/studentService";
 import { authService } from "@/services/authService";
 import { findCurrentTuition } from "@/helper";
 import { STEPS } from "@/constants";
 import { v4 as uuidv4 } from "uuid";
+import { useDebounce } from "@/app/hooks/useDebounce";
 
 export default function TuitionPage() {
   const { user, setUser } = useAuthStore();
@@ -33,7 +33,7 @@ export default function TuitionPage() {
     startTime: "",
     endTime: "",
   });
-  const debouncedStudentId = useDebounce(studentInfo.studentId, 500);
+  const debouncedStudentId = useDebounce(studentInfo.studentId, 1000);
   const [payment, setPayment] = useState({
     id: 0,
     amountToPay: 0,
@@ -41,53 +41,52 @@ export default function TuitionPage() {
   });
   const [otp, setOtp] = useState("");
 
-  useEffect(() => {
-    if (!debouncedStudentId) return;
+  const handleFetchTuition = async () => {
+    try {
+      const data = await tuitionService.getStudentTuition(
+        studentInfo.studentId,
+        "PENDING"
+      );
 
-    const fetchTuition = async () => {
-      try {
-        const data = await tuitionService.getStudentTuition(
-          debouncedStudentId,
-          "PENDING"
-        );
-
-        if (Array.isArray(data) && data.length > 0) {
-          const currentTuition = findCurrentTuition(data);
-          if (currentTuition) {
-            setStudentInfo({
-              studentId: currentTuition.sID,
-              studentName: currentTuition.student.name,
-              tuitionAmount: currentTuition.fee,
-              startTime: currentTuition.startTime,
-              endTime: currentTuition.endTime,
-            });
-            setPayment((prev) => ({
-              ...prev,
-              amountToPay: currentTuition.fee,
-              id: currentTuition.id,
-            }));
-          }
-        } else {
+      if (Array.isArray(data) && data.length > 0) {
+        const currentTuition = findCurrentTuition(data);
+        if (currentTuition) {
           setStudentInfo({
-            studentId: "",
-            studentName: "",
-            tuitionAmount: 0,
-            startTime: "",
-            endTime: "",
+            studentId: currentTuition.sID,
+            studentName: currentTuition.student.name,
+            tuitionAmount: currentTuition.fee,
+            startTime: currentTuition.startTime,
+            endTime: currentTuition.endTime,
           });
           setPayment((prev) => ({
             ...prev,
-            amountToPay: 0,
-            id: 0,
-            agreedTerms: false,
+            amountToPay: currentTuition.fee,
+            id: currentTuition.id,
           }));
         }
-      } catch (err) {
-        console.error("Failed to fetch tuition:", err);
+      } else {
+        setStudentInfo({
+          studentId: debouncedStudentId,
+          studentName: "",
+          tuitionAmount: 0,
+          startTime: "",
+          endTime: "",
+        });
+        setPayment((prev) => ({
+          ...prev,
+          amountToPay: 0,
+          id: 0,
+          agreedTerms: false,
+        }));
       }
-    };
+    } catch (err) {
+      console.error("Failed to fetch tuition:", err);
+    }
+  };
 
-    fetchTuition();
+  useEffect(() => {
+    if (!debouncedStudentId) return;
+    handleFetchTuition();
   }, [debouncedStudentId]);
 
   const handleSendOtp = async () => {
@@ -230,7 +229,12 @@ export default function TuitionPage() {
       )}
 
       {step === 2 && (
-        <InputOtp otp={otp} setOtp={setOtp} onConfirm={handleConfirmOtp} onResend={handleSendOtp} />
+        <InputOtp
+          otp={otp}
+          setOtp={setOtp}
+          onConfirm={handleConfirmOtp}
+          onResend={handleSendOtp}
+        />
       )}
 
       {step === 3 && <DisplayResult />}

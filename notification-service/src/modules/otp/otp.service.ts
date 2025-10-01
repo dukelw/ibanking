@@ -34,7 +34,7 @@ export class OtpService {
     });
 
     const subject = 'Your OTP Code';
-    const body = `<p>Your OTP code is <b>${code}</b>. It will expire in 5 minutes.</p>`;
+    const body = `<p>Your OTP code is <b>${code}</b>. It will expire in 1 minutes.</p>`;
 
     await this.emailService.sendMail(email, subject, body, userId);
 
