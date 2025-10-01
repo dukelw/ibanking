@@ -143,7 +143,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "E:\\ibanking\\notification-service\\prisma\\generated\\prisma",
+      "value": "C:\\Users\\PC\\Desktop\\Puahuhu\\Learn\\KTHDV\\project\\ibanking\\notification-service\\prisma\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -157,7 +157,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "E:\\ibanking\\notification-service\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\PC\\Desktop\\Puahuhu\\Learn\\KTHDV\\project\\ibanking\\notification-service\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

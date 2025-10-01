@@ -9,6 +9,7 @@ interface CheckInformationProps {
   setPayment: (payment: any) => void;
   onNext: () => void;
   onSendOtp: () => void;
+  onFetchTuition: () => void;
 }
 
 export default function CheckInformation({
@@ -19,6 +20,7 @@ export default function CheckInformation({
   setPayment,
   onNext,
   onSendOtp,
+  onFetchTuition,
 }: CheckInformationProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,6 +117,13 @@ export default function CheckInformation({
               />
             </div>
           </div>
+            <button
+              type="button"
+              onClick={onFetchTuition}
+              className="mt-4 w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+              Tra cứu học phí
+            </button>
         </div>
       </div>
 

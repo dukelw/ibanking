@@ -132,7 +132,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "E:\\ibanking\\auth-service\\prisma\\generated\\prisma",
+      "value": "C:\\Users\\PC\\Desktop\\Puahuhu\\Learn\\KTHDV\\project\\ibanking\\auth-service\\prisma\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -146,7 +146,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "E:\\ibanking\\auth-service\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\PC\\Desktop\\Puahuhu\\Learn\\KTHDV\\project\\ibanking\\auth-service\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

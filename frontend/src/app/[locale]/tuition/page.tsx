@@ -31,7 +31,7 @@ export default function TuitionPage() {
     startTime: "",
     endTime: "",
   });
-  const debouncedStudentId = useDebounce(studentInfo.studentId, 500);
+
   const [payment, setPayment] = useState({
     id: 0,
     amountToPay: 0,
@@ -39,54 +39,57 @@ export default function TuitionPage() {
   });
   const [otp, setOtp] = useState("");
 
-  useEffect(() => {
-    if (!debouncedStudentId) return;
+  const handleFetchTuition = async () => {
+    if (!studentInfo.studentId) {
+      toast.warning("Vui lòng nhập MSSV trước khi tra cứu!");
+      return;
+    }
 
-    const fetchTuition = async () => {
-      try {
-        const data = await tuitionService.getStudentTuition(
-          debouncedStudentId,
-          "PENDING"
-        );
+    try {
+      const data = await tuitionService.getStudentTuition(
+        studentInfo.studentId,
+        "PENDING"
+      );
 
-        if (Array.isArray(data) && data.length > 0) {
-          const currentTuition = findCurrentTuition(data);
-          if (currentTuition) {
-            setStudentInfo({
-              studentId: currentTuition.sID,
-              studentName: currentTuition.student.name,
-              tuitionAmount: currentTuition.fee,
-              startTime: currentTuition.startTime,
-              endTime: currentTuition.endTime,
-            });
-            setPayment((prev) => ({
-              ...prev,
-              amountToPay: currentTuition.fee,
-              id: currentTuition.id,
-            }));
-          }
-        } else {
+      if (Array.isArray(data) && data.length > 0) {
+        const currentTuition = findCurrentTuition(data);
+        if (currentTuition) {
           setStudentInfo({
-            studentId: "",
-            studentName: "",
-            tuitionAmount: 0,
-            startTime: "",
-            endTime: "",
+            studentId: currentTuition.sID,
+            studentName: currentTuition.student.name,
+            tuitionAmount: currentTuition.fee,
+            startTime: currentTuition.startTime,
+            endTime: currentTuition.endTime,
           });
           setPayment((prev) => ({
             ...prev,
-            amountToPay: 0,
-            id: 0,
-            agreedTerms: false,
+            amountToPay: currentTuition.fee,
+            id: currentTuition.id,
           }));
+          toast.success("Đã tra cứu thành công!");
         }
-      } catch (err) {
-        console.error("Failed to fetch tuition:", err);
+      } else {
+        toast.error("Không tìm thấy học phí cho MSSV này!");
+        setStudentInfo({
+          ...studentInfo,
+          studentName: "",
+          tuitionAmount: 0,
+          startTime: "",
+          endTime: "",
+        });
+        setPayment((prev) => ({
+          ...prev,
+          amountToPay: 0,
+          id: 0,
+          agreedTerms: false,
+        }));
       }
-    };
+    } catch (err) {
+      console.error("Failed to fetch tuition:", err);
+      toast.error("Có lỗi xảy ra khi tra cứu học phí!");
+    }
+  };
 
-    fetchTuition();
-  }, [debouncedStudentId]);
 
   const handleSendOtp = async () => {
     const res = await otpService.genearateOtp(user.id.toString(), payer.email);
@@ -122,32 +125,6 @@ export default function TuitionPage() {
       }
     }
   };
-
-  // ngay dưới các useEffect khác
-  useEffect(() => {
-    if (step === 3) {
-      toast.info("Quay về trang thanh toán trong 3 giây...");
-      const timer = setTimeout(() => {
-        // reset lại thông tin nếu cần
-        setStep(1);
-        setStudentInfo({
-          studentId: "",
-          studentName: "",
-          tuitionAmount: 0,
-          startTime: "",
-          endTime: "",
-        });
-        setPayment({
-          id: 0,
-          amountToPay: 0,
-          agreedTerms: false,
-        });
-        setOtp("");
-      }, 3000);
-
-      return () => clearTimeout(timer); // cleanup khi component unmount
-    }
-  }, [step]);
 
   useEffect(() => {
     if (!user) return;
@@ -214,6 +191,7 @@ export default function TuitionPage() {
           setPayment={setPayment}
           onNext={() => setStep(2)}
           onSendOtp={handleSendOtp}
+          onFetchTuition={handleFetchTuition}
         />
       )}
 
