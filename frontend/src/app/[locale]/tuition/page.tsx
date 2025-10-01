@@ -230,7 +230,7 @@ export default function TuitionPage() {
       )}
 
       {step === 2 && (
-        <InputOtp otp={otp} setOtp={setOtp} onConfirm={handleConfirmOtp} />
+        <InputOtp otp={otp} setOtp={setOtp} onConfirm={handleConfirmOtp} onResend={handleSendOtp} />
       )}
 
       {step === 3 && <DisplayResult />}
