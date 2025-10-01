@@ -14,6 +14,7 @@ import {
   CreditCard,
   UserCircle,
 } from "lucide-react";
+import Image from "next/image";
 
 export default function Header() {
   const { user, setUser, setTokens } = useAuthStore();
@@ -47,7 +48,7 @@ export default function Header() {
     <header className="w-full flex justify-between items-center bg-[#00713D] text-white p-4 shadow-md relative">
       <Link href={"/"}>
         <h1 className="text-xl font-bold flex items-center gap-2">
-          <School className="w-6 h-6" />
+          <Image src="/logo.png" alt="Logo" width={30} height={30} />
           IBanking
         </h1>
       </Link>
