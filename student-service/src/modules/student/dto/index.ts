@@ -13,6 +13,12 @@ export class PayTuitionDto {
 
   @ApiProperty({ example: 202, description: 'Payer ID (e.g., student ID)' })
   payerId: number;
+
+  @ApiProperty({
+    example: 'checkout-456',
+    description: 'Checkout ID for the payment session',
+  })
+  checkoutId: string;
 }
 
 export class CreateStudentDto {

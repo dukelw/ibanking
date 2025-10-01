@@ -7,12 +7,12 @@ import axios, { AxiosResponse } from "axios";
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/notification/otp`;
 
 export const otpService = {
-  async genearateOtp(userId: string, email: string, transactionId?: string) {
+  async genearateOtp(userId: string, email: string, checkoutId: string) {
     try {
       const response: AxiosResponse = await axios.post(`${API_URL}/generate`, {
         userId,
         email,
-        transactionId,
+        checkoutId,
       });
 
       return response.data;
@@ -21,11 +21,12 @@ export const otpService = {
     }
   },
 
-  async verifyOtp(userId: string, code: string) {
+  async verifyOtp(userId: string, code: string, checkoutId: string) {
     try {
       const response: AxiosResponse = await axios.post(`${API_URL}/verify`, {
         userId,
         code,
+        checkoutId,
       });
 
       return response.data;

@@ -10,7 +10,7 @@ export class OtpService {
     private emailService: EmailService,
   ) {}
 
-  async generateOtp(userId: string, email: string, transactionId?: string) {
+  async generateOtp(userId: string, email: string, checkoutId: string) {
     let code: string;
     let existing: any;
 
@@ -19,8 +19,10 @@ export class OtpService {
       existing = await this.prisma.otp.findFirst({
         where: {
           userId,
+          checkoutId,
           code,
           expiresAt: { gt: new Date() },
+          used: false,
         },
       });
     } while (existing);
@@ -28,7 +30,7 @@ export class OtpService {
     const expiresAt = new Date(Date.now() + 1 * 60 * 1000);
 
     const otp = await this.prisma.otp.create({
-      data: { code, userId, transactionId, expiresAt },
+      data: { code, userId, expiresAt, checkoutId },
     });
 
     const subject = 'Your OTP Code';
@@ -39,9 +41,15 @@ export class OtpService {
     return otp;
   }
 
-  async verifyOtp(userId: string, code: string) {
+  async verifyOtp(userId: string, code: string, checkoutId: string) {
     const otp = await this.prisma.otp.findFirst({
-      where: { userId, code, used: false, expiresAt: { gt: new Date() } },
+      where: {
+        userId,
+        code,
+        used: false,
+        expiresAt: { gt: new Date() },
+        checkoutId,
+      },
     });
 
     if (!otp)
@@ -49,6 +57,7 @@ export class OtpService {
         message: 'Invalid or expired OTP',
         success: false,
       };
+
     await this.prisma.otp.update({
       where: { id: otp.id },
       data: { used: true },

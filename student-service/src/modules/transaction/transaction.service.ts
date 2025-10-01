@@ -12,6 +12,8 @@ export class TransactionService {
       select: {
         id: true,
         amount: true,
+        checkoutId: true,
+        tuitionId: true,
         createdAt: true,
         paymentUserId: true,
         paymentAccountType: true,
@@ -62,6 +64,8 @@ export class TransactionService {
       select: {
         id: true,
         amount: true,
+        checkoutId: true,
+        tuitionId: true,
         createdAt: true,
         paymentUserId: true,
         paymentAccountType: true,

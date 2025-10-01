@@ -110,6 +110,7 @@ export class StudentController {
       dto.tuitionId,
       dto.payerId,
       dto.payerType as PaymentAccountType,
+      dto.checkoutId,
     );
   }
 }

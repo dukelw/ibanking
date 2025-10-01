@@ -15,13 +15,13 @@ datasource db {
 }
 
 model Otp {
-  id            String   @id @default(uuid())
-  code          String // mã OTP sinh ra
-  userId        String // liên kết tới user nhận OTP
-  transactionId String? // gắn với giao dịch nào (nếu có)
-  expiresAt     DateTime // thời hạn hiệu lực (ví dụ 5 phút)
-  used          Boolean  @default(false) // đã dùng hay chưa
-  createdAt     DateTime @default(now())
+  id         String   @id @default(uuid())
+  code       String // mã OTP sinh ra
+  userId     String // liên kết tới user nhận OTP
+  checkoutId String // gắn với giao dịch nào (nếu có)
+  expiresAt  DateTime // thời hạn hiệu lực (ví dụ 5 phút)
+  used       Boolean  @default(false) // đã dùng hay chưa
+  createdAt  DateTime @default(now())
 }
 
 model EmailSent {
