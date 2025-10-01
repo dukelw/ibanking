@@ -45,9 +45,11 @@ enum PaymentAccountType {
 }
 
 model Transaction {
-  id        Int      @id @default(autoincrement())
-  amount    Float
-  createdAt DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  checkoutId String   @unique
+  tuitionId  Int   @unique
+  amount     Float
+  createdAt  DateTime @default(now())
 
   // Liên kết đến User (người nộp tiền)
   paymentUserId      Int

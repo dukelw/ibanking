@@ -123,6 +123,7 @@ export class StudentService {
     tuitionId: number,
     payerId: number,
     payerType: 'STUDENT' | 'OTHER',
+    checkoutId: string,
   ) {
     return this.prisma.$transaction(async (tx) => {
       const tuition = await tx.tuition.findUnique({ where: { id: tuitionId } });
@@ -166,6 +167,8 @@ export class StudentService {
           paymentUserId: payerId,
           paymentAccountType: payerType,
           studentId: student.sID,
+          tuitionId: tuition.id,
+          checkoutId,
         },
       });
 

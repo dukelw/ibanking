@@ -26,7 +26,8 @@ export const studentService = {
     studentId: string,
     tuitionId: number,
     payerId: number,
-    payerType: string
+    payerType: string,
+    checkoutId: string
   ) {
     try {
       const response: AxiosResponse = await axios.post(
@@ -37,6 +38,7 @@ export const studentService = {
           tuitionId,
           payerId,
           payerType,
+          checkoutId,
         }
       );
 

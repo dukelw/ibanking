@@ -13,10 +13,12 @@ import { studentService } from "@/services/studentService";
 import { authService } from "@/services/authService";
 import { findCurrentTuition } from "@/helper";
 import { STEPS } from "@/constants";
+import { v4 as uuidv4 } from "uuid";
 
 export default function TuitionPage() {
   const { user, setUser } = useAuthStore();
   const [step, setStep] = useState(1);
+  const [checkoutId, setCheckoutId] = useState("");
 
   const [payer, setPayer] = useState({
     fullName: "",
@@ -89,7 +91,14 @@ export default function TuitionPage() {
   }, [debouncedStudentId]);
 
   const handleSendOtp = async () => {
-    const res = await otpService.genearateOtp(user.id.toString(), payer.email);
+    const newCheckoutId = uuidv4();
+    setCheckoutId(newCheckoutId);
+
+    const res = await otpService.genearateOtp(
+      user.id.toString(),
+      payer.email,
+      newCheckoutId
+    );
     if (res) {
       toast.success(`Send OTP to email ${payer.email}`);
     } else {
@@ -98,14 +107,15 @@ export default function TuitionPage() {
   };
 
   const handleConfirmOtp = async () => {
-    const res = await otpService.verifyOtp(user.id.toString(), otp);
-    if (res) {
+    const res = await otpService.verifyOtp(user.id.toString(), otp, checkoutId);
+    if (res.success) {
       const res = await studentService.payTuition(
         user.email,
         studentInfo.studentId,
         payment.id,
         user.id,
-        user.sID ? "STUDENT" : "OTHER"
+        user.sID ? "STUDENT" : "OTHER",
+        checkoutId
       );
       if (res) {
         if (user.sID) {
@@ -120,6 +130,8 @@ export default function TuitionPage() {
       } else {
         toast.error("Có lỗi xảy ra");
       }
+    } else {
+      toast.error(res.message);
     }
   };
 

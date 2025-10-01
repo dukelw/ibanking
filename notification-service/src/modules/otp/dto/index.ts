@@ -4,11 +4,18 @@ export class GenerateOtpDto {
   @ApiProperty({ description: 'User ID in the system', example: 'user_12345' })
   userId: string;
 
-  @ApiProperty({ description: 'User email to send OTP', example: 'student@example.com' })
+  @ApiProperty({
+    description: 'User email to send OTP',
+    example: 'student@example.com',
+  })
   email: string;
 
-  @ApiProperty({ description: 'Transaction ID (optional)', example: 'txn-456', required: false })
-  transactionId?: string;
+  @ApiProperty({
+    description: 'Checkout ID (optional)',
+    example: 'checkout-456',
+    required: false,
+  })
+  checkoutId: string;
 }
 export class GenerateOtpResponseDto {
   @ApiProperty({ example: '76f3f4ca-73b1-4113-9e3f-76dc33d26f7a' })
@@ -36,8 +43,17 @@ export class VerifyOtpDto {
   @ApiProperty({ description: 'User ID in the system', example: 'user_12345' })
   userId: string;
 
-  @ApiProperty({ description: 'OTP code entered by the user', example: '123456' })
+  @ApiProperty({
+    description: 'OTP code entered by the user',
+    example: '123456',
+  })
   code: string;
+
+  @ApiProperty({
+    description: 'Checkout ID associated with the OTP',
+    example: 'checkout_12345',
+  })
+  checkoutId: string;
 }
 export class VerifyOtpResponseDto {
   @ApiProperty({ example: true })
