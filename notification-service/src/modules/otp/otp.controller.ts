@@ -28,6 +28,6 @@ export class OtpController {
   @ApiResponse({ status: 201, description: 'OTP verification result', type: VerifyOtpResponseDto })
   async verify(@Body() dto: VerifyOtpDto) {
     const isValid = await this.otpService.verifyOtp(dto.userId, dto.code);
-    return { valid: isValid };
+    return isValid;
   }
 }

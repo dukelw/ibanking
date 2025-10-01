@@ -25,7 +25,7 @@ export class OtpService {
       });
     } while (existing);
 
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 1 * 60 * 1000);
 
     const otp = await this.prisma.otp.create({
       data: { code, userId, transactionId, expiresAt },
@@ -39,18 +39,21 @@ export class OtpService {
     return otp;
   }
 
-  async verifyOtp(userId: string, code: string): Promise<boolean> {
+  async verifyOtp(userId: string, code: string) {
     const otp = await this.prisma.otp.findFirst({
       where: { userId, code, used: false, expiresAt: { gt: new Date() } },
     });
 
-    if (!otp) return false;
-
+    if (!otp)
+      return {
+        message: 'Invalid or expired OTP',
+        success: false,
+      };
     await this.prisma.otp.update({
       where: { id: otp.id },
       data: { used: true },
     });
 
-    return true;
+    return { message: 'OTP verified successfully', success: true };
   }
 }

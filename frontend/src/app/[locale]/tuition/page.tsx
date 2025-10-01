@@ -99,7 +99,7 @@ export default function TuitionPage() {
 
   const handleConfirmOtp = async () => {
     const res = await otpService.verifyOtp(user.id.toString(), otp);
-    if (res) {
+    if (res.success) {
       const res = await studentService.payTuition(
         user.email,
         studentInfo.studentId,
@@ -120,6 +120,8 @@ export default function TuitionPage() {
       } else {
         toast.error("Có lỗi xảy ra");
       }
+    } else {
+      toast.error(res.message || "OTP không hợp lệ hoặc đã hết hạn");
     }
   };
 
@@ -218,7 +220,7 @@ export default function TuitionPage() {
       )}
 
       {step === 2 && (
-        <InputOtp otp={otp} setOtp={setOtp} onConfirm={handleConfirmOtp} />
+        <InputOtp otp={otp} setOtp={setOtp} onConfirm={handleConfirmOtp} onResend={handleSendOtp} />
       )}
 
       {step === 3 && <DisplayResult />}
