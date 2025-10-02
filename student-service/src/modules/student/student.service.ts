@@ -202,7 +202,7 @@ export class StudentService {
       } else {
         await firstValueFrom(
           this.httpService.post(
-            `${process.env.AUTH_SERVICE}/user/${payerId}/refund-balance`,
+            `${process.env.USER_SERVICE}/user/${payerId}/refund-balance`,
             {
               amount: tuition.fee,
             },

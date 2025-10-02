@@ -1,5 +1,6 @@
 export default interface User {
   id: number;
+  sID?: string;
   email: string;
   name?: string;
   avatar?: string;

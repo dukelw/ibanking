@@ -27,6 +27,7 @@ export const authService = {
 
       return response.data;
     } catch (error) {
+      console.log(error);
       throw new Error("Invalid credentials");
     }
   },

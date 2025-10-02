@@ -2,127 +2,169 @@ version: "3.9"
 
 services:
   # =====================
-  # PostgreSQL for Auth + Student
+  # PostgreSQL Databases
   # =====================
-  postgres-auth-student:
+  postgres-user:
     image: postgres:15
-    container_name: postgres-auth-student
+    container_name: postgres-user
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: auth_student
+      POSTGRES_DB: user
     ports:
-      - "5433:5432"
+      - "5435:5432"
     volumes:
-      - postgres_auth_student_data:/var/lib/postgresql/data
+      - postgres_user_data:/var/lib/postgresql/data
 
-  # =====================
-  # PostgreSQL for Payment
-  # =====================
-  postgres-payment:
+  postgres-student:
     image: postgres:15
-    container_name: postgres-payment
+    container_name: postgres-student
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: payment
+      POSTGRES_DB: student
     ports:
       - "5434:5432"
     volumes:
-      - postgres_payment_data:/var/lib/postgresql/data
+      - postgres_student_data:/var/lib/postgresql/data
 
-  # =====================
-  # MongoDB for Notification
-  # =====================
-  mongo-notification:
-    image: mongo:6
-    container_name: mongo-notification
+  postgres-notification:
+    image: postgres:15
+    container_name: postgres-notification
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: notification
     ports:
-      - "27017:27017"
+      - "5436:5432"
     volumes:
-      - mongo_notification_data:/data/db
+      - postgres_notification_data:/var/lib/postgresql/data
 
-  # =====================
-  # Auth Service
-  # =====================
-  auth:
-    build: ./auth
-    container_name: auth-service
-    restart: always
-    depends_on:
-      - postgres-auth-student
+  postgres-transaction:
+    image: postgres:15
+    container_name: postgres-transaction
     environment:
-      DATABASE_URL: "postgresql://postgres:postgres@postgres-auth-student:5432/auth_student"
-      PORT: 3001
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: transaction
     ports:
-      - "3001:3001"
+      - "5437:5432"
+    volumes:
+      - postgres_transaction_data:/var/lib/postgresql/data
 
   # =====================
-  # Student Service
+  # Redis
   # =====================
-  student:
-    build: ./student
+  redis:
+    image: redis:7
+    container_name: redis_local
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+
+  # =====================
+  # Backend Services
+  # =====================
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start:dev"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres-user:5432/user
+      PORT: 4001
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - postgres-user
+      - redis
+    ports:
+      - "4001:4001"
+
+  student-service:
+    build: ./student-service
     container_name: student-service
-    restart: always
-    depends_on:
-      - postgres-auth-student
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start:dev"
     environment:
-      DATABASE_URL: "postgresql://postgres:postgres@postgres-auth-student:5432/auth_student"
-      PORT: 3004
-    ports:
-      - "3004:3004"
-
-  # =====================
-  # Payment Service
-  # =====================
-  payment:
-    build: ./payment
-    container_name: payment-service
-    restart: always
+      DATABASE_URL: postgresql://postgres:postgres@postgres-student:5432/student
+      PORT: 4003
+      USER_SERVICE: http://user-service:4001
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      TRANSACTION_SERVICE: http://transaction-service:4004
     depends_on:
-      - postgres-payment
-    environment:
-      DATABASE_URL: "postgresql://postgres:postgres@postgres-payment:5432/payment"
-      PORT: 3003
+      - postgres-student
+      - user-service
+      - redis
     ports:
-      - "3003:3003"
+      - "4003:4003"
 
-  # =====================
-  # Notification Service
-  # =====================
-  notification:
-    build: ./notification
+  notification-service:
+    build:
+      context: ./notification-service
+
     container_name: notification-service
-    restart: always
-    depends_on:
-      - mongo-notification
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start:dev"
     environment:
-      DATABASE_URL: "mongodb://mongo-notification:27017/notifications"
-      PORT: 3002
+      DATABASE_URL: postgresql://postgres:postgres@postgres-notification:5432/notification
+      PORT: 4002
+      USER_SERVICE: http://user-service:4001
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - postgres-notification
+      - redis
     ports:
-      - "3002:3002"
+      - "4002:4002"
 
-  # =====================
-  # Frontend (Next.js)
-  # =====================
-  frontend:
-    build: ./frontend
-    container_name: frontend-app
-    restart: always
-    depends_on:
-      - auth
-      - notification
-      - payment
-      - student
+  transaction-service:
+    build: ./transaction-service
+    container_name: transaction-service
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start:dev"
     environment:
-      NEXT_PUBLIC_API_AUTH: "http://localhost:3001"
-      NEXT_PUBLIC_API_NOTIFICATION: "http://localhost:3002"
-      NEXT_PUBLIC_API_PAYMENT: "http://localhost:3003"
-      NEXT_PUBLIC_API_STUDENT: "http://localhost:3004"
+      DATABASE_URL: postgresql://postgres:postgres@postgres-transaction:5432/transaction
+      PORT: 4004
+      USER_SERVICE: http://user-service:4001
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - postgres-transaction
+      - user-service
+      - redis
+    ports:
+      - "4004:4004"
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    command: npm run start:dev
+    env_file:
+      - ./api-gateway/.env.pro
+    depends_on:
+      - user-service
+      - student-service
+      - notification-service
+      - transaction-service
+    ports:
+      - "4000:4000"
+
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:4000
     ports:
       - "3000:3000"
+    depends_on:
+      - api-gateway
+
 
 volumes:
-  postgres_auth_student_data:
-  postgres_payment_data:
-  mongo_notification_data:
+  postgres_user_data:
+  postgres_student_data:
+  postgres_notification_data:
+  postgres_transaction_data:
+  redis_data:
