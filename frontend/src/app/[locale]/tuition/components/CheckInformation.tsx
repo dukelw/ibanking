@@ -155,7 +155,7 @@ export default function CheckInformation({
 
         <button
           type="submit"
-          className="w-full p-2 bg-[#00713D] text-white rounded disabled:opacity-50"
+          className="w-full p-2 bg-[#00713D] text-white rounded disabled:opacity-50 cursor-pointer"
           disabled={
             !payment.agreedTerms || // chưa đồng ý điều khoản
             !studentInfo.studentId || // chưa nhập MSSV

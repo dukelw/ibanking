@@ -1,7 +1,14 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiParam, ApiOperation } from '@nestjs/swagger';
 import { TransactionService } from './transaction.service';
-import { TransactionResponseDto } from './dto';
+import { CreateTransactionDto, TransactionResponseDto } from './dto';
 
 @ApiTags('Transactions')
 @Controller('transactions')
@@ -62,5 +69,16 @@ export class TransactionController {
     @Param('id', ParseIntPipe) id: number,
   ) {
     return this.transactionService.getTransactionOfUser(payerType, id);
+  }
+
+  @Post()
+  @ApiOperation({
+    summary: 'Create a new transaction',
+    description:
+      'Create transaction, update tuition status, and send email notification.',
+  })
+  @ApiResponse({ status: 201, description: 'Transaction created successfully' })
+  async createTransaction(@Body() dto: CreateTransactionDto) {
+    return this.transactionService.createTransaction(dto);
   }
 }

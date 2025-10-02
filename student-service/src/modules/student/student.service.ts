@@ -7,15 +7,12 @@ import {
 import * as bcrypt from 'bcrypt';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { InjectQueue } from '@nestjs/bull';
-import type { Queue } from 'bull';
 
 @Injectable()
 export class StudentService {
   constructor(
     private prisma: PrismaService,
     private httpService: HttpService,
-    @InjectQueue('notification') private notificationQueue: Queue, // queue gửi mail
   ) {}
 
   async createStudent(
@@ -87,6 +84,28 @@ export class StudentService {
     return student;
   }
 
+  async getStudentByStudentId(sID: string) {
+    const student = await this.prisma.student.findUnique({
+      where: { sID },
+      select: {
+        id: true,
+        sID: true,
+        name: true,
+        email: true,
+        phoneNumber: true,
+        address: true,
+        dateOfBirth: true,
+        balance: true,
+      },
+    });
+
+    if (!student) {
+      throw new NotFoundException(`Student with ID ${sID} not found`);
+    }
+
+    return student;
+  }
+
   async login(sID: string, password: string) {
     const student = await this.prisma.student.findUnique({
       where: { sID },
@@ -125,83 +144,84 @@ export class StudentService {
     payerType: 'STUDENT' | 'OTHER',
     checkoutId: string,
   ) {
-    return this.prisma.$transaction(async (tx) => {
-      const tuition = await tx.tuition.findUnique({ where: { id: tuitionId } });
-      if (!tuition) throw new NotFoundException('Tuition not found');
-      if (tuition.status === 'PAID') throw new Error('Already paid');
+    // 1. Kiểm tra tuition
+    const tuition = await this.prisma.tuition.findUnique({
+      where: { id: tuitionId },
+    });
+    if (!tuition) throw new NotFoundException('Tuition not found');
+    if (tuition.status === 'PAID') throw new Error('Already paid');
 
-      const student = await tx.student.findUnique({
-        where: { sID: studentId },
+    // 2. Kiểm tra student
+    const student = await this.prisma.student.findUnique({
+      where: { sID: studentId },
+    });
+    if (!student) throw new NotFoundException('Student not found');
+
+    // 3. Deduct balance
+    if (payerType === 'STUDENT') {
+      const res = await this.prisma.student.updateMany({
+        where: { id: payerId, balance: { gte: tuition.fee } },
+        data: { balance: { decrement: tuition.fee } },
       });
-      if (!student) throw new NotFoundException('Student not found');
+      if (res.count === 0) throw new Error('Not enough balance');
+    } else {
+      await firstValueFrom(
+        this.httpService.post(
+          `${process.env.USER_SERVICE}/user/${payerId}/deduct-balance`,
+          {
+            amount: tuition.fee,
+          },
+        ),
+      );
+    }
 
+    // 4. Gọi TransactionService
+    let transaction;
+    try {
+      transaction = await firstValueFrom(
+        this.httpService.post(
+          `${process.env.TRANSACTION_SERVICE}/transactions`,
+          {
+            amount: tuition.fee,
+            paymentUserId: payerId,
+            paymentAccountType: payerType,
+            studentId: student.sID,
+            tuitionId: tuition.id,
+            checkoutId,
+            payerEmail,
+          },
+        ),
+      );
+    } catch (err) {
+      // rollback balance
       if (payerType === 'STUDENT') {
-        const payer = await tx.student.findUnique({ where: { id: payerId } });
-        if (!payer) throw new NotFoundException('Payer student not found');
-        if (payer.balance < tuition.fee) throw new Error('Not enough balance');
-
-        const res = await tx.student.updateMany({
-          where: { id: payerId, balance: { gte: tuition.fee } },
-          data: { balance: { decrement: tuition.fee } },
+        await this.prisma.student.update({
+          where: { id: payerId },
+          data: { balance: { increment: tuition.fee } },
         });
-        if (res.count === 0) throw new Error('Not enough balance');
-      } else if (payerType === 'OTHER') {
+      } else {
         await firstValueFrom(
           this.httpService.post(
-            `${process.env.AUTH_SERVICE}/auth/${payerId}/deduct-balance`,
-            { amount: tuition.fee },
+            `${process.env.AUTH_SERVICE}/user/${payerId}/refund-balance`,
+            {
+              amount: tuition.fee,
+            },
           ),
         );
       }
+      throw new Error(`Transaction failed: ${err.message}`);
+    }
 
-      const updatedTuition = await tx.tuition.updateMany({
-        where: { id: tuitionId, status: 'PENDING' },
-        data: { status: 'PAID' },
-      });
-
-      if (updatedTuition.count === 0) throw new Error('Already paid');
-
-      const transaction = await tx.transaction.create({
-        data: {
-          amount: tuition.fee,
-          paymentUserId: payerId,
-          paymentAccountType: payerType,
-          studentId: student.sID,
-          tuitionId: tuition.id,
-          checkoutId,
-        },
-      });
-
-      if (payerEmail !== student.email) {
-        // 🚀 Publish job vào queue sau khi tạo transaction
-        await this.notificationQueue.add('sendPaymentEmail', {
-          to: student.email, // hoặc email payer
-          subject: 'Xác nhận thanh toán học phí thành công',
-          body: `
-          <h3>Xác nhận thanh toán học phí</h3>
-          <p>Sinh viên: ${student.name} (${student.sID})</p>
-          <p>Số tiền: ${tuition.fee.toLocaleString()} VND</p>
-          <p>Thời gian: ${new Date().toLocaleString()}</p>
-        `,
-        });
-      }
-
-      // 🚀 Publish job vào queue sau khi tạo transaction
-      await this.notificationQueue.add('sendPaymentEmail', {
-        to: payerEmail, // hoặc email payer
-        subject: 'Xác nhận thanh toán học phí thành công',
-        body: `
-          <h3>Xác nhận thanh toán học phí</h3>
-          <p>Sinh viên: ${student.name} (${student.sID})</p>
-          <p>Số tiền: ${tuition.fee.toLocaleString()} VND</p>
-          <p>Thời gian: ${new Date().toLocaleString()}</p>
-        `,
-      });
-
-      return {
-        message: 'Payment success',
-        transactionId: transaction.id,
-      };
+    // 5. Update tuition status thành PAID
+    await this.prisma.tuition.update({
+      where: { id: tuition.id },
+      data: { status: 'PAID' },
     });
+
+    return {
+      message: 'Payment success',
+      transactionId: transaction.data.id,
+      success: true,
+    };
   }
 }

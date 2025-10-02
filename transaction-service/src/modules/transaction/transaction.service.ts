@@ -1,10 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaymentAccountType } from 'prisma/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateTransactionDto } from './dto';
+import { InjectQueue } from '@nestjs/bull';
+import type { Queue } from 'bull';
 
 @Injectable()
 export class TransactionService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @InjectQueue('notification') private notificationQueue: Queue,
+  ) {}
 
   async getTransactions() {
     return this.prisma.transaction.findMany({
@@ -15,15 +21,9 @@ export class TransactionService {
         checkoutId: true,
         tuitionId: true,
         createdAt: true,
+        studentId: true,
         paymentUserId: true,
         paymentAccountType: true,
-        student: {
-          select: {
-            id: true,
-            sID: true,
-            name: true,
-          },
-        },
       },
     });
   }
@@ -37,13 +37,6 @@ export class TransactionService {
         createdAt: true,
         paymentUserId: true,
         paymentAccountType: true,
-        student: {
-          select: {
-            id: true,
-            sID: true,
-            name: true,
-          },
-        },
       },
     });
 
@@ -67,16 +60,40 @@ export class TransactionService {
         checkoutId: true,
         tuitionId: true,
         createdAt: true,
+        studentId: true,
         paymentUserId: true,
         paymentAccountType: true,
-        student: {
-          select: {
-            id: true,
-            sID: true,
-            name: true,
-          },
-        },
       },
     });
+  }
+
+  async createTransaction(dto: CreateTransactionDto) {
+    const transaction = await this.prisma.transaction.create({
+      data: {
+        amount: dto.amount,
+        paymentUserId: dto.paymentUserId,
+        paymentAccountType: dto.paymentAccountType,
+        studentId: dto.studentId,
+        tuitionId: dto.tuitionId,
+        checkoutId: dto.checkoutId,
+      },
+    });
+
+    // đẩy notification async
+    await this.notificationQueue.add('sendPaymentEmail', {
+      to: dto.payerEmail,
+      subject: 'Xác nhận thanh toán học phí thành công',
+      body: `
+      <h3>Xác nhận thanh toán học phí</h3>
+      <p>Sinh viên: ${dto.studentId}</p>
+      <p>Số tiền: ${dto.amount.toLocaleString()} VND</p>
+      <p>Thời gian: ${new Date().toLocaleString()}</p>
+    `,
+    });
+
+    return {
+      message: 'Transaction created',
+      transactionId: transaction.id,
+    };
   }
 }

@@ -1,18 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-
-export class StudentInfoDto {
-  @ApiProperty({ example: 1, description: 'Student database ID' })
-  id: number;
-
-  @ApiProperty({ example: '52200195', description: 'Student code (sID)' })
-  sID: string;
-
-  @ApiProperty({
-    example: 'Nguyen Quang Vinh',
-    description: 'Full name of student',
-  })
-  name: string;
-}
+import { PaymentAccountType } from 'prisma/generated/prisma/wasm';
 
 export class TransactionResponseDto {
   @ApiProperty({ example: 101, description: 'Transaction ID' })
@@ -38,7 +25,27 @@ export class TransactionResponseDto {
     description: 'Type of account used for payment',
   })
   paymentAccountType: string;
+}
 
-  @ApiProperty({ type: () => StudentInfoDto })
-  student: StudentInfoDto;
+export class CreateTransactionDto {
+  @ApiProperty()
+  amount: number;
+
+  @ApiProperty()
+  tuitionId: number;
+
+  @ApiProperty()
+  checkoutId: string;
+
+  @ApiProperty()
+  paymentUserId: number;
+
+  @ApiProperty({ enum: PaymentAccountType })
+  paymentAccountType: PaymentAccountType;
+
+  @ApiProperty()
+  studentId: string;
+
+  @ApiProperty()
+  payerEmail: string;
 }

@@ -58,6 +58,18 @@ export const studentService = {
     }
   },
 
+  async getStudentByStudentId(sID: string) {
+    try {
+      const response: AxiosResponse = await axios.get(
+        `${API_URL}/find-by-student-id/${sID}`
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new Error("Error when get student tuition");
+    }
+  },
+
   async logout() {
     try {
     } catch (error) {

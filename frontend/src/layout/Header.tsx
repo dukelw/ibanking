@@ -57,7 +57,7 @@ export default function Header() {
       <div className="relative" ref={menuRef}>
         <button
           onClick={() => setOpenMenu((prev) => !prev)}
-          className="flex items-center gap-2 px-3 py-1 bg-[#055a2b] rounded hover:bg-[#044d24] transition"
+          className="flex items-center gap-2 px-3 py-1 bg-[#055a2b] rounded hover:bg-[#044d24] transition cursor-pointer"
         >
           {user ? user.email : <UserCircle className="w-5 h-5" />}
         </button>

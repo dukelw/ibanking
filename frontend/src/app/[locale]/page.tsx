@@ -61,7 +61,7 @@ export default function TuitionHomePage() {
               <Button
                 color={"green"}
                 onClick={handleGotoTuition}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 cursor-pointer"
               >
                 <School className="w-4 h-4" />
                 Vào trang đóng học phí

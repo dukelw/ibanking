@@ -15,18 +15,16 @@ datasource db {
 }
 
 model Student {
-  id           Int           @id @default(autoincrement())
-  sID          String        @unique
-  name         String?
-  password     String
-  balance      Int           @default(0)
-  address      String?
-  dateOfBirth  DateTime?
-  email        String?       @unique
-  phoneNumber  String?       @unique
-  tuitions     Tuition[]
-  // Quan hệ: một student có thể nhận nhiều transaction
-  transactions Transaction[]
+  id          Int       @id @default(autoincrement())
+  sID         String    @unique
+  name        String?
+  password    String
+  balance     Int       @default(0)
+  address     String?
+  dateOfBirth DateTime?
+  email       String?   @unique
+  phoneNumber String?   @unique
+  tuitions    Tuition[]
 }
 
 model Tuition {
@@ -42,20 +40,4 @@ model Tuition {
 enum PaymentAccountType {
   STUDENT
   OTHER
-}
-
-model Transaction {
-  id         Int      @id @default(autoincrement())
-  checkoutId String   @unique
-  tuitionId  Int   @unique
-  amount     Float
-  createdAt  DateTime @default(now())
-
-  // Liên kết đến User (người nộp tiền)
-  paymentUserId      Int
-  paymentAccountType PaymentAccountType?
-
-  // Liên kết đến Student (sinh viên được gạch nợ)
-  studentId String
-  student   Student @relation(fields: [studentId], references: [sID])
 }

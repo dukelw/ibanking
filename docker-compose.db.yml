@@ -4,17 +4,17 @@ services:
   # =====================
   # PostgreSQL for Auth + Student
   # =====================
-  postgres-auth:
+  postgres-user:
     image: postgres:15
-    container_name: postgres-auth
+    container_name: postgres-user
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: auth
+      POSTGRES_DB: user
     ports:
       - "5435:5432"
     volumes:
-      - postgres_auth_data:/var/lib/postgresql/data
+      - postgres_user_data:/var/lib/postgresql/data
 
   # =====================
   # PostgreSQL for Payment
@@ -47,6 +47,21 @@ services:
       - postgres_notification_data:/var/lib/postgresql/data
 
   # =====================
+  # PostgreSQL for Transaction
+  # =====================
+  postgres-transaction:
+    image: postgres:15
+    container_name: postgres-transaction
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: transaction
+    ports:
+      - "5437:5432"
+    volumes:
+      - postgres_transaction_data:/var/lib/postgresql/data
+
+  # =====================
   # Redis for Bull Queue
   redis:
     image: redis:7
@@ -58,7 +73,8 @@ services:
       - redis_data:/data
 
 volumes:
-  postgres_auth_data:
+  postgres_user_data:
   postgres_student_data:
   postgres_notification_data:
+  postgres_transaction_data:
   redis_data:

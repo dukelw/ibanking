@@ -2,7 +2,7 @@
 import { api } from "@/lib/axios";
 import axios, { AxiosResponse } from "axios";
 
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/student/transactions`;
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/transactions`;
 
 export const transactionService = {
   // Lấy tất cả transactions

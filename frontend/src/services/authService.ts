@@ -4,7 +4,7 @@ import { api } from "@/lib/axios";
 
 import axios, { AxiosResponse } from "axios";
 
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/auth`;
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/user`;
 
 export const authService = {
   async getUser(id: number) {

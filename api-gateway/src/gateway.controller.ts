@@ -12,8 +12,10 @@ export class GatewayController {
     let target = '';
     let path = req.originalUrl;
 
-    if (req.path.startsWith('/auth')) {
-      target = process.env.AUTH_API_URL!;
+    if (req.path.startsWith('/user')) {
+      target = process.env.USER_API_URL!;
+    } else if (req.path.startsWith('/transaction')) {
+      target = process.env.TRANSACTION_API_URL!;
     } else if (req.path.startsWith('/student')) {
       target = process.env.STUDENT_API_URL!;
       // luôn xóa /student khỏi URL

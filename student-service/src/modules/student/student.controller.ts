@@ -74,6 +74,20 @@ export class StudentController {
     return this.studentService.getStudentById(id);
   }
 
+  @Get('/find-by-student-id/:sID')
+  @ApiOperation({
+    summary: 'Get student by student ID',
+    description: 'Fetch details of a specific student using their student ID.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Student found',
+    type: StudentResponseDto,
+  })
+  async getStudentByStudentId(@Param('sID') sID: string) {
+    return this.studentService.getStudentByStudentId(sID);
+  }
+
   @Post('login')
   @ApiOperation({
     summary: 'Student login',

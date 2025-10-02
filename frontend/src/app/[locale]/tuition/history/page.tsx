@@ -15,6 +15,7 @@ import {
 } from "flowbite-react";
 import { useAuthStore } from "@/store/authStore";
 import { transactionService } from "@/services/transactionService";
+import { studentService } from "@/services/studentService";
 
 export default function History() {
   const { user } = useAuthStore();
@@ -54,7 +55,22 @@ export default function History() {
         );
       }
 
-      setTransactions(filtered);
+      // gọi studentService để enrich data
+      const enriched = await Promise.all(
+        filtered.map(async (tx: any) => {
+          try {
+            const student = await studentService.getStudentByStudentId(
+              tx.studentId
+            );
+            return { ...tx, student }; // thêm field student
+          } catch (err) {
+            console.error(`Không lấy được student ${tx.studentId}`, err);
+            return { ...tx, student: null };
+          }
+        })
+      );
+
+      setTransactions(enriched);
     } catch (err: any) {
       setError(err.message || "Không thể lấy lịch sử giao dịch");
     } finally {
@@ -64,7 +80,6 @@ export default function History() {
 
   useEffect(() => {
     fetchTransactions();
-    console.log(user);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -130,7 +145,15 @@ export default function History() {
                   <TableCell>{formatCurrency(tx.amount)}</TableCell>
                   <TableCell>{tx.paymentAccountType || "-"}</TableCell>
                   <TableCell>
-                    {new Date(tx.createdAt).toLocaleDateString("vi-VN")}
+                    {new Date(tx.createdAt).toLocaleString("vi-VN", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                      hour12: false,
+                    })}
                   </TableCell>
                 </TableRow>
               ))}

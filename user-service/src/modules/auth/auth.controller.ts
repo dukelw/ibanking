@@ -25,8 +25,8 @@ import {
   BalanceDeductResponseDto,
 } from './dto';
 
-@ApiTags('AUTH')
-@Controller('auth')
+@ApiTags('USER')
+@Controller('user')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -120,6 +120,30 @@ export class AuthController {
     @Body() deductBalanceDto: DeductBalanceDto,
   ) {
     return await this.authService.deductBalance(id, deductBalanceDto.amount);
+  }
+
+  @Post(':id/refund-balance')
+  @ApiOperation({
+    summary: 'Refund user balance',
+    description: 'Increase user balance by a certain amount (refund case)',
+  })
+  @ApiBody({ type: DeductBalanceDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Balance refunded successfully',
+    schema: {
+      example: {
+        message: 'Balance refunded',
+        newBalance: 1500000,
+      },
+    },
+  })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async refundBalance(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() refundBalanceDto: DeductBalanceDto,
+  ) {
+    return await this.authService.refundBalance(id, refundBalanceDto.amount);
   }
 
   @Get(':id')

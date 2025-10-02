@@ -82,6 +82,21 @@ export class AuthService {
     };
   }
 
+  async refundBalance(id: number, amount: number) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('User not found');
+
+    const updatedUser = await this.prisma.user.update({
+      where: { id },
+      data: { balance: { increment: amount } },
+    });
+
+    return {
+      message: 'Balance refunded',
+      newBalance: updatedUser.balance,
+    };
+  }
+
   async getUserById(id: number) {
     const student = await this.prisma.user.findUnique({
       where: { id },
