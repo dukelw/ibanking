@@ -70,7 +70,7 @@ services:
   user-service:
     build: ./user-service
     container_name: user-service
-    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start:dev"
+    command: sh -c "npx prisma generate && npx prisma db push && npm run start:dev"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres-user:5432/user
       PORT: 4001
@@ -85,7 +85,7 @@ services:
   student-service:
     build: ./student-service
     container_name: student-service
-    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start:dev"
+    command: sh -c "npx prisma generate && npx prisma db push && npm run start:dev"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres-student:5432/student
       PORT: 4003
@@ -105,7 +105,7 @@ services:
       context: ./notification-service
 
     container_name: notification-service
-    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start:dev"
+    command: sh -c "npx prisma generate && npx prisma db push && npm run start:dev"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres-notification:5432/notification
       PORT: 4002
@@ -121,7 +121,7 @@ services:
   transaction-service:
     build: ./transaction-service
     container_name: transaction-service
-    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start:dev"
+    command: sh -c "npx prisma generate && npx prisma db push && npm run start:dev"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres-transaction:5432/transaction
       PORT: 4004
