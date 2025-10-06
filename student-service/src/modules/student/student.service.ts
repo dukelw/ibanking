@@ -154,10 +154,10 @@ export class StudentService {
     const payerLockKey = `lock:user:${payerId}`;
     const tuitionLockKey = `lock:tuition:${tuitionId}`;
 
-    // ⏱ thời gian giữ khóa tối đa 5 giây
+    // Thời gian giữ khóa tối đa 5 giây
     const ttl = 5000;
 
-    // ⚙️ Acquire cả hai khóa cùng lúc
+    // Acquire cả hai khóa cùng lúc
     const lock = await this.redlock.lock([payerLockKey, tuitionLockKey], ttl);
 
     try {

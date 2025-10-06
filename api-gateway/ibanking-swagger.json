@@ -1,0 +1,1396 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/user/register": {
+      "post": {
+        "description": "Create a new user account",
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "User failed to be created"
+          }
+        },
+        "summary": "Register user",
+        "tags": ["User"]
+      }
+    },
+    "/user/login": {
+      "post": {
+        "description": "User login with email and password",
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User logged in successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "message": "Email or password is incorrect",
+                    "error": "Unauthorized",
+                    "statusCode": 401
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "User login",
+        "tags": ["User"]
+      }
+    },
+    "/user/users": {
+      "get": {
+        "description": "Return all users in the system",
+        "operationId": "AuthController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Users fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to fetch users"
+          }
+        },
+        "summary": "Get all users",
+        "tags": ["User"]
+      }
+    },
+    "/user/{id}/deduct-balance": {
+      "post": {
+        "description": "Subtract a certain amount from the user balance",
+        "operationId": "AuthController_deductBalance",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeductBalanceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Balance deducted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceDeductResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not enough balance"
+          }
+        },
+        "summary": "Deduct user balance",
+        "tags": ["User"]
+      }
+    },
+    "/user/{id}/refund-balance": {
+      "post": {
+        "description": "Increase user balance by a certain amount (refund case)",
+        "operationId": "AuthController_refundBalance",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeductBalanceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Balance refunded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "message": "Balance refunded",
+                    "newBalance": 1500000
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Refund user balance",
+        "tags": ["User"]
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "description": "Return user details by ID",
+        "operationId": "AuthController_getUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserIDResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Get user by ID",
+        "tags": ["User"]
+      }
+    },
+    "/transactions/all": {
+      "get": {
+        "description": "Retrieve a list of all transactions, including related student info.",
+        "operationId": "TransactionController_getAllTransactions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of all transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TransactionResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all transactions",
+        "tags": ["Transactions"]
+      }
+    },
+    "/transactions/{id}": {
+      "get": {
+        "description": "Retrieve details of a specific transaction by its transaction ID.",
+        "operationId": "TransactionController_getTransactionById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Transaction ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found"
+          }
+        },
+        "summary": "Get transaction details",
+        "tags": ["Transactions"]
+      }
+    },
+    "/transactions/user/{payerType}/{id}": {
+      "get": {
+        "description": "Retrieve all transactions made by a specific user, based on payer type and user ID.",
+        "operationId": "TransactionController_getTransactionOfUser",
+        "parameters": [
+          {
+            "name": "payerType",
+            "required": true,
+            "in": "path",
+            "description": "Payer type (e.g., STUDENT, STAFF)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transactions of a specific user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TransactionResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get transactions of a user",
+        "tags": ["Transactions"]
+      }
+    },
+    "/transactions": {
+      "post": {
+        "description": "Create transaction, update tuition status, and send email notification.",
+        "operationId": "TransactionController_createTransaction",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransactionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transaction created successfully"
+          }
+        },
+        "summary": "Create a new transaction",
+        "tags": ["Transactions"]
+      }
+    },
+    "/student/students/create": {
+      "post": {
+        "description": "Register a new student with basic information such as ID, password, name, and optional details.",
+        "operationId": "StudentController_createStudent",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStudentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Student created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create student",
+        "tags": ["Students"]
+      }
+    },
+    "/students": {
+      "get": {
+        "description": "Retrieve a list of all registered students.",
+        "operationId": "StudentController_getStudents",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of students",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StudentResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all students",
+        "tags": ["Students"]
+      }
+    },
+    "/student/students/{id}": {
+      "get": {
+        "description": "Fetch details of a specific student using their ID.",
+        "operationId": "StudentController_getStudentById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Student found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get student by ID",
+        "tags": ["Students"]
+      }
+    },
+    "/student/students/find-by-student-id/{sID}": {
+      "get": {
+        "description": "Fetch details of a specific student using their student ID.",
+        "operationId": "StudentController_getStudentByStudentId",
+        "parameters": [
+          {
+            "name": "sID",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Student found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get student by student ID",
+        "tags": ["Students"]
+      }
+    },
+    "/student/students/login": {
+      "post": {
+        "description": "Authenticate a student using their Student ID and password.",
+        "operationId": "StudentController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginStudentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Student login",
+        "tags": ["Students"]
+      }
+    },
+    "/student/students/{sID}/pay-tuition": {
+      "post": {
+        "description": "Process tuition fee payment for a student. Requires tuition ID, payer ID, and account type.",
+        "operationId": "StudentController_payTuition",
+        "parameters": [
+          {
+            "name": "sID",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PayTuitionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tuition paid successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayTuitionResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tuition or student not found"
+          }
+        },
+        "summary": "Pay tuition",
+        "tags": ["Students"]
+      }
+    },
+    "/tuition/create": {
+      "post": {
+        "description": "This endpoint allows creating a new tuition record for a student. ",
+        "operationId": "TuitionController_createTuition",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTuitionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tuition created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TuitionWithStudentResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Student not found"
+          }
+        },
+        "summary": "Create new tuition record",
+        "tags": ["Tuition"]
+      }
+    },
+    "/tuition": {
+      "get": {
+        "description": "Retrieve a list of all tuition records in the system. ",
+        "operationId": "TuitionController_findAll",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by tuition status (e.g. PENDING, PAID, CANCELLED)",
+            "schema": {
+              "example": "PENDING",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of tuition records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TuitionWithStudentResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all tuition records",
+        "tags": ["Tuition"]
+      }
+    },
+    "/tuition/{sID}": {
+      "get": {
+        "description": "Retrieve all tuition records of a specific student using their student ID.",
+        "operationId": "TuitionController_getTuitionByStudentId",
+        "parameters": [
+          {
+            "name": "sID",
+            "required": true,
+            "in": "path",
+            "description": "Student ID",
+            "schema": {
+              "example": "SV001",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by tuition status (e.g. PENDING, PAID, CANCELLED)",
+            "schema": {
+              "example": "PENDING",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tuition records of the student",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TuitionWithStudentResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No tuition found"
+          }
+        },
+        "summary": "Get tuition by student ID",
+        "tags": ["Tuition"]
+      }
+    },
+    "/tuition/update/{id}": {
+      "patch": {
+        "description": "Update a tuition record using its tuition ID.",
+        "operationId": "TuitionController_updateTuition",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTuitionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tuition updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TuitionWithStudentResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tuition not found"
+          }
+        },
+        "summary": "Update tuition (by tuition ID)",
+        "tags": ["Tuition"]
+      }
+    },
+    "/notification/email/send": {
+      "post": {
+        "description": "Queue or send an email",
+        "operationId": "EmailController_send",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendEmailDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Email queued/sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a398fdd5-b62e-42ca-a4be-a45655aa53b8",
+                    "to": "user@example.com",
+                    "subject": "Welcome to our service",
+                    "body": "<p>Hello, your account has been created!</p>",
+                    "userId": "user_12345",
+                    "status": "SENT",
+                    "createdAt": "2025-09-19T14:09:07.124Z"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to send email"
+          }
+        },
+        "summary": "Send an email",
+        "tags": ["Email"]
+      }
+    },
+    "/notification/otp/generate": {
+      "post": {
+        "description": "Create a new OTP and send it via email",
+        "operationId": "OtpController_generate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OTP generated and sent successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateOtpResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "summary": "Generate OTP",
+        "tags": ["OTP"]
+      }
+    },
+    "/notification/otp/verify": {
+      "post": {
+        "description": "Verify the OTP entered by the user",
+        "operationId": "OtpController_verify",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OTP verification result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyOtpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Verify OTP",
+        "tags": ["OTP"]
+      }
+    }
+  },
+  "info": {
+    "title": "IBanking Documentation",
+    "description": "Combined API Docs",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "student@gmail.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "Nguyen Van A"
+          },
+          "password": {
+            "type": "string",
+            "example": "secret123"
+          },
+          "phone": {
+            "type": "string",
+            "example": "0123456789",
+            "default": ""
+          },
+          "balance": {
+            "type": "number",
+            "example": 1000.5,
+            "default": 0
+          }
+        },
+        "required": ["email", "password", "phone", "balance"]
+      },
+      "UserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "email": {
+            "type": "string",
+            "example": "student@example.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "Nguyen Van A"
+          },
+          "phone": {
+            "type": "string",
+            "example": "0123456789"
+          },
+          "balance": {
+            "type": "number",
+            "example": 1000.5
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2025-09-19T13:55:55.006Z"
+          }
+        },
+        "required": ["id", "email", "name", "phone", "balance", "createdAt"]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "student@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "secret123"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Login successful"
+          },
+          "student": {
+            "$ref": "#/components/schemas/StudentResponseDto"
+          }
+        },
+        "required": ["message", "student"]
+      },
+      "DeductBalanceDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "example": 100
+          }
+        },
+        "required": ["amount"]
+      },
+      "BalanceDeductResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Balance deducted"
+          },
+          "newBalance": {
+            "type": "number",
+            "example": 1000.5
+          }
+        },
+        "required": ["message", "newBalance"]
+      },
+      "UserIDResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "email": {
+            "type": "string",
+            "example": "student@example.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "Nguyen Van A"
+          },
+          "phone": {
+            "type": "string",
+            "example": "0123456789"
+          },
+          "balance": {
+            "type": "number",
+            "example": 1000.5
+          }
+        },
+        "required": ["id", "email", "name", "phone", "balance"]
+      },
+      "TransactionResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 101,
+            "description": "Transaction ID"
+          },
+          "amount": {
+            "type": "number",
+            "example": 5000000,
+            "description": "Transaction amount"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2025-09-26T12:30:00.000Z",
+            "description": "Transaction creation time"
+          },
+          "paymentUserId": {
+            "type": "number",
+            "example": 42,
+            "description": "ID of the user who made the payment"
+          },
+          "paymentAccountType": {
+            "type": "string",
+            "example": "STUDENT",
+            "description": "Type of account used for payment"
+          }
+        },
+        "required": [
+          "id",
+          "amount",
+          "createdAt",
+          "paymentUserId",
+          "paymentAccountType"
+        ]
+      },
+      "CreateTransactionDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "tuitionId": {
+            "type": "number"
+          },
+          "checkoutId": {
+            "type": "string"
+          },
+          "paymentUserId": {
+            "type": "number"
+          },
+          "paymentAccountType": {
+            "type": "string",
+            "enum": ["STUDENT", "OTHER"]
+          },
+          "studentId": {
+            "type": "string"
+          },
+          "payerEmail": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "amount",
+          "tuitionId",
+          "checkoutId",
+          "paymentUserId",
+          "paymentAccountType",
+          "studentId",
+          "payerEmail"
+        ]
+      },
+      "CreateStudentDto": {
+        "type": "object",
+        "properties": {
+          "sID": {
+            "type": "string",
+            "example": "S12345",
+            "description": "Student unique ID"
+          },
+          "password": {
+            "type": "string",
+            "example": "123456",
+            "description": "Password"
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe",
+            "description": "Full name"
+          },
+          "email": {
+            "type": "string",
+            "example": "student@example.com"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "0123456789"
+          },
+          "balance": {
+            "type": "number",
+            "example": 299999
+          },
+          "address": {
+            "type": "string",
+            "example": "New York"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "example": "2002-01-01",
+            "description": "Date of birth (ISO 8601)"
+          }
+        },
+        "required": ["sID", "password", "name"]
+      },
+      "StudentResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "sID": {
+            "type": "string",
+            "example": "S12345"
+          },
+          "balance": {
+            "type": "number",
+            "example": 299999
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "student@example.com"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "0123456789"
+          },
+          "address": {
+            "type": "string",
+            "example": "New York"
+          },
+          "dateOfBirth": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2002-10-10T00:00:00.000Z",
+            "description": "Date of birth (ISO 8601)"
+          }
+        },
+        "required": ["id", "sID", "balance", "name"]
+      },
+      "LoginStudentDto": {
+        "type": "object",
+        "properties": {
+          "sID": {
+            "type": "string",
+            "example": "S12345"
+          },
+          "password": {
+            "type": "string",
+            "example": "123456"
+          }
+        },
+        "required": ["sID", "password"]
+      },
+      "PayTuitionDto": {
+        "type": "object",
+        "properties": {
+          "tuitionId": {
+            "type": "number",
+            "example": 101,
+            "description": "Tuition fee ID"
+          },
+          "payerType": {
+            "type": "string",
+            "example": "STUDENT",
+            "description": "Payer account type"
+          },
+          "payerEmail": {
+            "type": "string",
+            "example": "student@example.com",
+            "description": "Payer email"
+          },
+          "payerId": {
+            "type": "number",
+            "example": 202,
+            "description": "Payer ID (e.g., student ID)"
+          },
+          "checkoutId": {
+            "type": "string",
+            "example": "checkout-456",
+            "description": "Checkout ID for the payment session"
+          }
+        },
+        "required": [
+          "tuitionId",
+          "payerType",
+          "payerEmail",
+          "payerId",
+          "checkoutId"
+        ]
+      },
+      "PayTuitionResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Payment successful"
+          },
+          "tuitionId": {
+            "type": "number",
+            "example": 101
+          },
+          "tuitionStatus": {
+            "type": "string",
+            "example": "PAID"
+          }
+        },
+        "required": ["message", "tuitionId", "tuitionStatus"]
+      },
+      "CreateTuitionDto": {
+        "type": "object",
+        "properties": {
+          "sID": {
+            "type": "string",
+            "description": "Student ID",
+            "example": "SV001"
+          },
+          "fee": {
+            "type": "number",
+            "description": "Tuition fee",
+            "example": 5000000
+          },
+          "status": {
+            "type": "string",
+            "description": "Payment status",
+            "example": "PENDING",
+            "default": "PENDING"
+          },
+          "startTime": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Start time of the tuition period",
+            "example": "2025-09-01T00:00:00.000Z"
+          },
+          "endTime": {
+            "format": "date-time",
+            "type": "string",
+            "description": "End time of the tuition period",
+            "example": "2026-05-31T23:59:59.000Z"
+          }
+        },
+        "required": ["sID", "fee"]
+      },
+      "TuitionWithStudentResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 2
+          },
+          "sID": {
+            "type": "string",
+            "example": "52200195"
+          },
+          "status": {
+            "type": "string",
+            "example": "PENDING"
+          },
+          "fee": {
+            "type": "number",
+            "example": 5000000
+          },
+          "startTime": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2025-09-01T00:00:00.000Z"
+          },
+          "endTime": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-05-31T23:59:59.000Z"
+          },
+          "student": {
+            "$ref": "#/components/schemas/StudentResponseDto"
+          }
+        },
+        "required": [
+          "id",
+          "sID",
+          "status",
+          "fee",
+          "startTime",
+          "endTime",
+          "student"
+        ]
+      },
+      "UpdateTuitionDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Payment status (e.g. PENDING, DONE, CANCELLED)",
+            "example": "DONE"
+          },
+          "fee": {
+            "type": "number",
+            "description": "Updated tuition fee",
+            "example": 6000000
+          }
+        }
+      },
+      "SendEmailDto": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "Recipient email address",
+            "example": "user@example.com"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Email subject",
+            "example": "Welcome to our service"
+          },
+          "body": {
+            "type": "string",
+            "description": "Email content (HTML or plain text)",
+            "example": "<p>Hello, your account has been created!</p>"
+          },
+          "userId": {
+            "type": "string",
+            "description": "Sender ID in the system (optional)",
+            "example": "user_12345"
+          }
+        },
+        "required": ["to", "subject", "body"]
+      },
+      "GenerateOtpDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "User ID in the system",
+            "example": "user_12345"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email to send OTP",
+            "example": "student@example.com"
+          },
+          "checkoutId": {
+            "type": "string",
+            "description": "Checkout ID (optional)",
+            "example": "checkout-456"
+          }
+        },
+        "required": ["userId", "email"]
+      },
+      "GenerateOtpResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "76f3f4ca-73b1-4113-9e3f-76dc33d26f7a"
+          },
+          "code": {
+            "type": "string",
+            "example": "981410"
+          },
+          "userId": {
+            "type": "string",
+            "example": "user_12345"
+          },
+          "transactionId": {
+            "type": "string",
+            "example": "txn-456"
+          },
+          "expiresAt": {
+            "type": "string",
+            "example": "2025-09-19T14:15:56.312Z"
+          },
+          "used": {
+            "type": "boolean",
+            "example": false
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2025-09-19T14:10:56.315Z"
+          }
+        },
+        "required": ["id", "code", "userId", "expiresAt", "used", "createdAt"]
+      },
+      "VerifyOtpDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "User ID in the system",
+            "example": "user_12345"
+          },
+          "code": {
+            "type": "string",
+            "description": "OTP code entered by the user",
+            "example": "123456"
+          },
+          "checkoutId": {
+            "type": "string",
+            "description": "Checkout ID associated with the OTP",
+            "example": "checkout_12345"
+          }
+        },
+        "required": ["userId", "code", "checkoutId"]
+      },
+      "VerifyOtpResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "OTP verified successfully."
+          }
+        },
+        "required": ["success", "message"]
+      }
+    }
+  }
+}

@@ -1,10 +1,5 @@
 import { Controller, Post, Body } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBody,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { EmailService } from './email.service';
 import { SendEmailDto } from './dto';
 
@@ -14,7 +9,10 @@ export class EmailController {
   constructor(private emailService: EmailService) {}
 
   @Post('send')
-  @ApiOperation({ summary: 'Send an email', description: 'Queue or send an email' })
+  @ApiOperation({
+    summary: 'Send an email',
+    description: 'Queue or send an email',
+  })
   @ApiBody({ type: SendEmailDto })
   @ApiResponse({
     status: 201,
