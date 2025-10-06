@@ -6,7 +6,7 @@ import axios from 'axios';
 
 export async function setupSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
-    .setTitle('API Gateway')
+    .setTitle('IBanking Documentation')
     .setDescription('Combined API Docs')
     .setVersion('1.0')
     .build();
