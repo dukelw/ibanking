@@ -18,10 +18,10 @@ export async function setupSwagger(app: INestApplication) {
   document.components.schemas = document.components.schemas || {};
 
   const services = [
-    process.env.USER_API_URL,
-    process.env.TRANSACTION_API_URL,
-    process.env.STUDENT_API_URL,
-    process.env.NOTIFICATION_API_URL,
+    process.env.USER_SWAGGER_URL,
+    process.env.TRANSACTION_SWAGGER_URL,
+    process.env.STUDENT_SWAGGER_URL,
+    process.env.NOTIFICATION_SWAGGER_URL,
   ];
 
   for (const base of services) {
@@ -36,7 +36,7 @@ export async function setupSwagger(app: INestApplication) {
   }
 
   // 🟩 Lưu file JSON tại thư mục gốc project
-  const outputPath = path.join(process.cwd(), 'combined-swagger.json');
+  const outputPath = path.join(process.cwd(), 'ibanking-swagger.json');
   fs.writeFileSync(outputPath, JSON.stringify(document, null, 2));
   console.log(`✅ Combined Swagger saved to ${outputPath}`);
 

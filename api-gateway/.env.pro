@@ -3,3 +3,7 @@ USER_API_URL=http://user-service:4001
 NOTIFICATION_API_URL=http://notification-service:4002
 STUDENT_API_URL=http://student-service:4003
 TRANSACTION_API_URL=http://transaction-service:4004
+USER_SWAGGER_URL=http://localhost:4001
+NOTIFICATION_SWAGGER_URL=http://localhost:4002
+STUDENT_SWAGGER_URL=http://localhost:4003
+TRANSACTION_SWAGGER_URL=http://localhost:4004
