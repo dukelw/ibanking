@@ -91,3 +91,58 @@ and use Ctrl+C for services if running separately.
 
 - If Prisma Studio doesn't start: check the `DATABASE_URL` in the `.env` of the corresponding service.
 - Check service logs in the terminal for quick debugging.
+
+## 7. Run Project with Docker
+
+```bash
+docker compose build
+```
+
+## 8. Environment Variables
+
+```bash
+# api-gateway (env)
+PORT=4000
+USER_API_URL=http://localhost:4001
+NOTIFICATION_API_URL=http://localhost:4002
+STUDENT_API_URL=http://localhost:4003
+TRANSACTION_API_URL=http://localhost:4004
+USER_SWAGGER_URL=http://localhost:4001
+NOTIFICATION_SWAGGER_URL=http://localhost:4002
+STUDENT_SWAGGER_URL=http://localhost:4003
+TRANSACTION_SWAGGER_URL=http://localhost:4004
+
+# api-gateway (env.pro)
+PORT=4000
+USER_API_URL=http://user-service:4001
+NOTIFICATION_API_URL=http://notification-service:4002
+STUDENT_API_URL=http://student-service:4003
+TRANSACTION_API_URL=http://transaction-service:4004
+
+# frontend
+NEXT_PUBLIC_API_URL=http://localhost:4000
+
+# notification-service
+DATABASE_URL=postgresql://postgres:postgres@localhost:5436/notification
+EMAIL_USER="YOUR_EMAIL"
+EMAIL_PASS="YOUR_PASSWORD"
+
+# student-service
+DATABASE_URL=postgresql://postgres:postgres@localhost:5434/payment
+# DATABASE_URL=postgresql://postgres:postgres@postgres-payment:5432/payment
+PORT=4003
+AUTH_SERVICE=http://localhost:4001
+
+# transaction-service
+DATABASE_URL=postgresql://postgres:postgres@localhost:5434/transaction
+# DATABASE_URL=postgresql://postgres:postgres@postgres-transaction:5432/transaction
+PORT=4004
+USER_SERVICE=http://localhost:4001
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# user-service
+DATABASE_URL="postgresql://postgres:postgres@localhost:5435/user"
+# DATABASE_URL="postgresql://postgres:postgres@postgres-user:5432/user"
+PORT=4001
+```
