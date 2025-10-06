@@ -19,8 +19,8 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Auth Service')
-    .setDescription('API docs for Auth microservice')
+    .setTitle('User Service')
+    .setDescription('API docs for User microservice')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

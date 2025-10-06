@@ -129,7 +129,7 @@ export class AuthController {
   })
   @ApiBody({ type: DeductBalanceDto })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Balance refunded successfully',
     schema: {
       example: {

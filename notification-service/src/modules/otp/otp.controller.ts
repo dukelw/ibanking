@@ -21,10 +21,13 @@ export class OtpController {
   @ApiBody({ type: GenerateOtpDto })
   @ApiResponse({
     status: 201,
-    description: 'OTP generated and sent to email',
+    description: 'OTP generated and sent successfully.',
     type: GenerateOtpResponseDto,
   })
-  @ApiResponse({ status: 500, description: 'Failed to generate or send OTP' })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error.',
+  })
   async generate(@Body() dto: GenerateOtpDto) {
     return this.otpService.generateOtp(dto.userId, dto.email, dto.checkoutId);
   }
@@ -37,7 +40,7 @@ export class OtpController {
   @ApiBody({ type: VerifyOtpDto })
   @ApiResponse({
     status: 201,
-    description: 'OTP verification result',
+    description: 'OTP verification result.',
     type: VerifyOtpResponseDto,
   })
   async verify(@Body() dto: VerifyOtpDto) {

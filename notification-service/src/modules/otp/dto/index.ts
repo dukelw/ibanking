@@ -55,7 +55,11 @@ export class VerifyOtpDto {
   })
   checkoutId: string;
 }
+
 export class VerifyOtpResponseDto {
   @ApiProperty({ example: true })
-  valid: boolean;
+  success: boolean;
+
+  @ApiProperty({ example: 'OTP verified successfully.' })
+  message: string;
 }

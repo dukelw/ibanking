@@ -4,6 +4,23 @@ import { INestApplication } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import axios from 'axios';
 
+async function wait(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+async function fetchWithRetries(url: string, tries = 5, delayMs = 1000) {
+  for (let i = 0; i < tries; i++) {
+    try {
+      const { data } = await axios.get(url, { timeout: 3000 });
+      return data;
+    } catch (err) {
+      if (i === tries - 1) throw err;
+      await wait(delayMs);
+    }
+  }
+  throw new Error('unreachable');
+}
+
 export async function setupSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('IBanking Documentation')
@@ -11,31 +28,56 @@ export async function setupSwagger(app: INestApplication) {
     .setVersion('1.0')
     .build();
 
-  const document = SwaggerModule.createDocument(app, config);
+  const document: any = SwaggerModule.createDocument(app, config);
 
   document.paths = document.paths || {};
   document.components = document.components || {};
   document.components.schemas = document.components.schemas || {};
 
   const services = [
-    process.env.USER_SWAGGER_URL,
-    process.env.TRANSACTION_SWAGGER_URL,
-    process.env.STUDENT_SWAGGER_URL,
-    process.env.NOTIFICATION_SWAGGER_URL,
-  ];
+    process.env.USER_API_URL,
+    process.env.TRANSACTION_API_URL,
+    process.env.STUDENT_API_URL,
+    process.env.NOTIFICATION_API_URL,
+  ].filter(Boolean) as string[];
 
   for (const base of services) {
-    try {
-      const { data } = await axios.get(`${base}/api/docs-json`);
-      if (data?.paths) Object.assign(document.paths, data.paths);
-      if (data?.components?.schemas)
-        Object.assign(document.components.schemas, data.components.schemas);
-    } catch (err) {
-      console.warn(`⚠️ Could not load Swagger from ${base}`);
+    const endpointsToTry = [`${base}/api/docs-json`];
+
+    let loaded = false;
+    for (const url of endpointsToTry) {
+      try {
+        console.log(`➡️ Trying to load swagger from: ${url}`);
+        const data: any = await fetchWithRetries(url, 4, 1000);
+        if (data?.paths) {
+          // merge with simple duplicate check
+          for (const [p, v] of Object.entries(data.paths)) {
+            if (!document.paths[p]) document.paths[p] = v;
+            else console.warn(`Duplicate path skipped: ${p}`);
+          }
+        }
+        if (data?.components?.schemas) {
+          document.components.schemas = {
+            ...document.components.schemas,
+            ...data.components.schemas,
+          };
+        }
+        console.log(`✅ Loaded swagger from ${url}`);
+        loaded = true;
+        break;
+      } catch (err: any) {
+        console.warn(`⚠️ Could not load from ${url}: ${err.message ?? err}`);
+      }
+    }
+
+    if (!loaded) {
+      console.warn(
+        `❌ Could not load Swagger from base ${base} (all attempts failed)`,
+      );
     }
   }
 
-  // 🟩 Lưu file JSON tại thư mục gốc project
+  // save file
   const outputPath = path.join(process.cwd(), 'ibanking-swagger.json');
   fs.writeFileSync(outputPath, JSON.stringify(document, null, 2));
   console.log(`✅ Combined Swagger saved to ${outputPath}`);
