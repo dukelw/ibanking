@@ -37,6 +37,9 @@ export class CreateStudentDto {
   @ApiProperty({ example: '0123456789', required: false })
   phoneNumber?: string;
 
+  @ApiProperty({ example: 299999, required: false })
+  balance: number;
+
   @ApiProperty({ example: 'New York', required: false })
   address?: string;
 
@@ -73,6 +76,9 @@ export class StudentResponseDto {
 
   @ApiProperty({ example: 'S12345' })
   sID: string;
+
+  @ApiProperty({ example: 299999 })
+  balance: number;
 
   @ApiProperty({ example: 'John Doe' })
   name: string;

@@ -40,6 +40,7 @@ export class StudentController {
       dto.password,
       dto.name,
       dto.email,
+      dto.balance,
       dto.phoneNumber,
       dto.address,
       dto.dateOfBirth,

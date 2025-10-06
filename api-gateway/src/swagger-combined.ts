@@ -35,10 +35,10 @@ export async function setupSwagger(app: INestApplication) {
   document.components.schemas = document.components.schemas || {};
 
   const services = [
-    process.env.USER_API_URL,
-    process.env.TRANSACTION_API_URL,
-    process.env.STUDENT_API_URL,
-    process.env.NOTIFICATION_API_URL,
+    process.env.USER_SWAGGER_URL,
+    process.env.TRANSACTION_SWAGGER_URL,
+    process.env.STUDENT_SWAGGER_URL,
+    process.env.NOTIFICATION_SWAGGER_URL,
   ].filter(Boolean) as string[];
 
   for (const base of services) {
