@@ -96,6 +96,8 @@ and use Ctrl+C for services if running separately.
 
 ```bash
 docker compose build
+
+docker compose up --build
 ```
 
 ## 8. Environment Variables
