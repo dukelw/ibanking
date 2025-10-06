@@ -29,8 +29,9 @@
     "@prisma/client": "^6.15.0",
     "bcrypt": "^6.0.0",
     "bull": "^4.16.5",
-    "ioredis": "^5.8.0",
+    "ioredis": "^5.8.1",
     "nodemailer": "^7.0.6",
+    "redlock": "^4.2.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },

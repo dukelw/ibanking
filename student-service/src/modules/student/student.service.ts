@@ -1,10 +1,12 @@
 import { HttpService } from '@nestjs/axios';
 import {
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import Redlock from 'redlock';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -13,6 +15,7 @@ export class StudentService {
   constructor(
     private prisma: PrismaService,
     private httpService: HttpService,
+    @Inject('REDLOCK') private readonly redlock: Redlock,
   ) {}
 
   async createStudent(
@@ -144,84 +147,92 @@ export class StudentService {
     payerType: 'STUDENT' | 'OTHER',
     checkoutId: string,
   ) {
-    // 1. Kiểm tra tuition
-    const tuition = await this.prisma.tuition.findUnique({
-      where: { id: tuitionId },
-    });
-    if (!tuition) throw new NotFoundException('Tuition not found');
-    if (tuition.status === 'PAID') throw new Error('Already paid');
+    const payerLockKey = `lock:user:${payerId}`;
+    const tuitionLockKey = `lock:tuition:${tuitionId}`;
 
-    // 2. Kiểm tra student
-    const student = await this.prisma.student.findUnique({
-      where: { sID: studentId },
-    });
-    if (!student) throw new NotFoundException('Student not found');
+    // ⏱ thời gian giữ khóa tối đa 5 giây
+    const ttl = 5000;
 
-    // 3. Deduct balance
-    if (payerType === 'STUDENT') {
-      const res = await this.prisma.student.updateMany({
-        where: { id: payerId, balance: { gte: tuition.fee } },
-        data: { balance: { decrement: tuition.fee } },
-      });
-      if (res.count === 0) throw new Error('Not enough balance');
-    } else {
-      await firstValueFrom(
-        this.httpService.post(
-          `${process.env.USER_SERVICE}/user/${payerId}/deduct-balance`,
-          {
-            amount: tuition.fee,
-          },
-        ),
-      );
-    }
+    // ⚙️ Acquire cả hai khóa cùng lúc
+    const lock = await this.redlock.lock([payerLockKey, tuitionLockKey], ttl);
 
-    // 4. Gọi TransactionService
-    let transaction;
     try {
-      transaction = await firstValueFrom(
-        this.httpService.post(
-          `${process.env.TRANSACTION_SERVICE}/transactions`,
-          {
-            amount: tuition.fee,
-            paymentUserId: payerId,
-            paymentAccountType: payerType,
-            studentId: student.sID,
-            tuitionId: tuition.id,
-            checkoutId,
-            payerEmail,
-          },
-        ),
-      );
-    } catch (err) {
-      // rollback balance
+      // --- KHỐI CODE AN TOÀN ---
+      const tuition = await this.prisma.tuition.findUnique({
+        where: { id: tuitionId },
+      });
+      if (!tuition) throw new Error('Tuition not found');
+      if (tuition.status === 'PAID') throw new Error('Already paid');
+
+      const student = await this.prisma.student.findUnique({
+        where: { sID: studentId },
+      });
+      if (!student) throw new Error('Student not found');
+
+      // Deduct balance
       if (payerType === 'STUDENT') {
-        await this.prisma.student.update({
-          where: { id: payerId },
-          data: { balance: { increment: tuition.fee } },
+        const res = await this.prisma.student.updateMany({
+          where: { id: payerId, balance: { gte: tuition.fee } },
+          data: { balance: { decrement: tuition.fee } },
         });
+        if (res.count === 0) throw new Error('Not enough balance');
       } else {
         await firstValueFrom(
           this.httpService.post(
-            `${process.env.USER_SERVICE}/user/${payerId}/refund-balance`,
-            {
-              amount: tuition.fee,
-            },
+            `${process.env.USER_SERVICE}/user/${payerId}/deduct-balance`,
+            { amount: tuition.fee },
           ),
         );
       }
-      throw new Error(`Transaction failed: ${err.message}`);
+
+      // Gọi TransactionService
+      let transaction;
+      try {
+        transaction = await firstValueFrom(
+          this.httpService.post(
+            `${process.env.TRANSACTION_SERVICE}/transactions`,
+            {
+              amount: tuition.fee,
+              paymentUserId: payerId,
+              paymentAccountType: payerType,
+              studentId: student.sID,
+              tuitionId: tuition.id,
+              checkoutId,
+              payerEmail,
+            },
+          ),
+        );
+      } catch (err) {
+        // rollback
+        if (payerType === 'STUDENT') {
+          await this.prisma.student.update({
+            where: { id: payerId },
+            data: { balance: { increment: tuition.fee } },
+          });
+        } else {
+          await firstValueFrom(
+            this.httpService.post(
+              `${process.env.USER_SERVICE}/user/${payerId}/refund-balance`,
+              { amount: tuition.fee },
+            ),
+          );
+        }
+        throw err;
+      }
+
+      await this.prisma.tuition.update({
+        where: { id: tuition.id },
+        data: { status: 'PAID' },
+      });
+
+      return {
+        message: 'Payment success',
+        transactionId: transaction.data.id,
+        success: true,
+      };
+    } finally {
+      // 🔓 Giải phóng khóa
+      await lock.unlock().catch(() => {});
     }
-
-    // 5. Update tuition status thành PAID
-    await this.prisma.tuition.update({
-      where: { id: tuition.id },
-      data: { status: 'PAID' },
-    });
-
-    return {
-      message: 'Payment success',
-      transactionId: transaction.data.id,
-      success: true,
-    };
   }
 }
