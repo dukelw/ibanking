@@ -2,7 +2,9 @@ import { Controller, All, Req, Res } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import type { Request, Response } from 'express';
 import { lastValueFrom } from 'rxjs';
+import { ApiExcludeController } from '@nestjs/swagger';
 
+@ApiExcludeController()
 @Controller()
 export class GatewayController {
   constructor(private readonly httpService: HttpService) {}

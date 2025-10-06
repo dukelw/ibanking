@@ -25,7 +25,7 @@ import {
   BalanceDeductResponseDto,
 } from './dto';
 
-@ApiTags('USER')
+@ApiTags('User')
 @Controller('user')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
